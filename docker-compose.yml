@@ -1,0 +1,36 @@
+services:
+  db:
+    container_name: lakarte_postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: lakarte_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - lakarte_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lakarte_app
+    restart: always
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - lakarte_network
+
+volumes:
+  db_data:
+networks:
+  lakarte_network:
