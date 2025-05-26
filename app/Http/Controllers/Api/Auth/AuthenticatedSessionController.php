@@ -58,7 +58,7 @@ class AuthenticatedSessionController extends Controller
             $this->authService->logout($request->user(), $request->boolean('all_devices') ? null : 'current');
             return $this->successResponse(null, "Logout successfully", 200);
         } catch (\Exception $e) {
-            return $this->errorResponse("Logout Failed", 400, $e->getMessage());
+            return $this->errorResponse("Logout Failed", 400, config('app.debug') ? $e->getMessage() : "Logout failed");
         }
     }
 
