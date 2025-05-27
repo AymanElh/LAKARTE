@@ -1,0 +1,14 @@
+created:
+    - database/factories/OrderFactory.php
+    - database/factories/TemplateFactory.php
+    - database/factories/PackFactory.php
+    - database/migrations/2025_05_27_103424_create_orders_table.php
+    - database/migrations/2025_05_27_103425_create_templates_table.php
+    - database/migrations/2025_05_27_103426_create_packs_table.php
+    - app/Models/Order.php
+    - app/Models/Template.php
+    - app/Models/Pack.php
+models:
+    Order: { client_name: string, client_email: string, client_phone: string, client_city: string, client_district: string, pack_id: id, template_id: 'id nullable', orientation: string, color: string, quantity: integer, status: 'enum:pending,processing,paid,shipped,cancelled default:pending', channel: 'enum:whatsapp,form default:form', logo_path: 'string nullable', brief_pdf_path: 'string nullable', payment_capture_path: 'string nullable', offered_at: 'timestamp nullable' }
+    Template: { name: string, pack_id: id, type: 'enum:standard,pro,custom default:standard', is_active: 'boolean default:true', front_image: 'string nullable', back_image: 'string nullable' }
+    Pack: { title: string, price: 'decimal:8,2', duration: string, description: text, image: 'string nullable', is_active: 'boolean default:true', special_offer: 'string nullable', promotion_start: 'timestamp nullable', promotion_end: 'timestamp nullable' }
