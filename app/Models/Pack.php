@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pack extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -15,15 +17,16 @@ class Pack extends Model
      * @var array
      */
     protected $fillable = [
-        'title',
-        'price',
-        'duration',
+        'name',
+        'slug',
         'description',
-        'image',
+        'type',
+        'price',
+        'delivery_time_days',
         'is_active',
-        'special_offer',
-        'promotion_start',
-        'promotion_end',
+        'highlight',
+        'image_path',
+        'features',
     ];
 
     /**
@@ -37,8 +40,23 @@ class Pack extends Model
             'id' => 'integer',
             'price' => 'decimal:2',
             'is_active' => 'boolean',
-            'promotion_start' => 'timestamp',
-            'promotion_end' => 'timestamp',
+            'highlight' => 'boolean',
+            'features' => 'array',
         ];
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function templates(): HasMany
+    {
+        return $this->hasMany(Template::class);
+    }
+
+    public function packOffers(): HasMany
+    {
+        return $this->hasMany(PackOffer::class);
     }
 }

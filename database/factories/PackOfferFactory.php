@@ -5,16 +5,16 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use App\Models\Pack;
-use App\Models\Template;
+use App\Models\PackOffer;
 
-class TemplateFactory extends Factory
+class PackOfferFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Template::class;
+    protected $model = PackOffer::class;
 
     /**
      * Define the model's default state.
@@ -23,14 +23,13 @@ class TemplateFactory extends Factory
     {
         return [
             'pack_id' => Pack::factory(),
-            'name' => fake()->name(),
+            'title' => fake()->sentence(4),
             'description' => fake()->text(),
-            'recto_path' => fake()->word(),
-            'verso_path' => fake()->word(),
+            'type' => fake()->randomElement(["discount","free_item","bundle"]),
+            'value' => fake()->word(),
+            'starts_at' => fake()->dateTime(),
+            'ends_at' => fake()->dateTime(),
             'is_active' => fake()->boolean(),
-            'preview_path' => fake()->word(),
-            'tags' => '{}',
-            'softDeletes' => fake()->word(),
         ];
     }
 }

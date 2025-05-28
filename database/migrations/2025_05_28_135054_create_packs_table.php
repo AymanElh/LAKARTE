@@ -13,16 +13,18 @@ return new class extends Migration
     {
         Schema::create('packs', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->decimal('price', 8, 2);
-            $table->string('duration');
+            $table->string('name');
+            $table->string('slug')->unique();
             $table->text('description');
-            $table->string('image')->nullable();
+            $table->enum('type', ["standard","pro","sur_mesure"]);
+            $table->decimal('price', 8, 2);
+            $table->integer('delivery_time_days');
             $table->boolean('is_active')->default(true);
-            $table->string('special_offer')->nullable();
-            $table->timestamp('promotion_start')->nullable();
-            $table->timestamp('promotion_end')->nullable();
+            $table->boolean('highlight')->default(false);
+            $table->string('image_path')->nullable();
+            $table->json('features')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

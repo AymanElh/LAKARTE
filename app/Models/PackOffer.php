@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Template extends Model
+class PackOffer extends Model
 {
     use HasFactory;
 
@@ -18,14 +17,13 @@ class Template extends Model
      */
     protected $fillable = [
         'pack_id',
-        'name',
+        'title',
         'description',
-        'recto_path',
-        'verso_path',
+        'type',
+        'value',
+        'starts_at',
+        'ends_at',
         'is_active',
-        'preview_path',
-        'tags',
-        'softDeletes',
     ];
 
     /**
@@ -38,18 +36,14 @@ class Template extends Model
         return [
             'id' => 'integer',
             'pack_id' => 'integer',
+            'starts_at' => 'timestamp',
+            'ends_at' => 'timestamp',
             'is_active' => 'boolean',
-            'tags' => 'array',
         ];
     }
 
     public function pack(): BelongsTo
     {
         return $this->belongsTo(Pack::class);
-    }
-
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class);
     }
 }

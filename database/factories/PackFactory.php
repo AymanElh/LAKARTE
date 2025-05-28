@@ -21,15 +21,16 @@ class PackFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence(4),
-            'price' => fake()->randomFloat(2, 0, 999999.99),
-            'duration' => fake()->word(),
+            'name' => fake()->name(),
+            'slug' => fake()->slug(),
             'description' => fake()->text(),
-            'image' => fake()->word(),
+            'type' => fake()->randomElement(["standard","pro","sur_mesure"]),
+            'price' => fake()->randomFloat(2, 0, 999999.99),
+            'delivery_time_days' => fake()->numberBetween(-10000, 10000),
             'is_active' => fake()->boolean(),
-            'special_offer' => fake()->word(),
-            'promotion_start' => fake()->dateTime(),
-            'promotion_end' => fake()->dateTime(),
+            'highlight' => fake()->boolean(),
+            'image_path' => fake()->word(),
+            'features' => '{}',
         ];
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Models\Order;
 use App\Models\Pack;
 use App\Models\Template;
+use App\Models\User;
 
 class OrderFactory extends Factory
 {
@@ -23,22 +24,23 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'client_name' => fake()->word(),
-            'client_email' => fake()->word(),
-            'client_phone' => fake()->word(),
-            'client_city' => fake()->word(),
-            'client_district' => fake()->word(),
+            'user_id' => User::factory(),
             'pack_id' => Pack::factory(),
             'template_id' => Template::factory(),
+            'client_name' => fake()->word(),
+            'client_email' => fake()->word(),
+            'phone' => fake()->phoneNumber(),
+            'city' => fake()->city(),
+            'neighborhood' => fake()->word(),
             'orientation' => fake()->word(),
             'color' => fake()->word(),
             'quantity' => fake()->numberBetween(-10000, 10000),
-            'status' => fake()->randomElement(["pending","processing","paid","shipped","cancelled"]),
-            'channel' => fake()->randomElement(["whatsapp","form"]),
+            'status' => fake()->randomElement(["pending","in_progress","paid","shipped","canceled"]),
             'logo_path' => fake()->word(),
-            'brief_pdf_path' => fake()->word(),
-            'payment_capture_path' => fake()->word(),
-            'offered_at' => fake()->dateTime(),
+            'brief_path' => fake()->word(),
+            'payment_proof_path' => fake()->word(),
+            'channel' => fake()->randomElement(["whatsapp","form"]),
+            'order_id' => Order::factory(),
         ];
     }
 }

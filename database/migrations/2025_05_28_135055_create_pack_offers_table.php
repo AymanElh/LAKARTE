@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('templates', function (Blueprint $table) {
+        Schema::create('pack_offers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->foreignId('pack_id');
-            $table->enum('type', ["standard","pro","custom"])->default('standard');
+            $table->string('title');
+            $table->text('description');
+            $table->enum('type', ["discount","free_item","bundle"]);
+            $table->string('value');
+            $table->timestamp('starts_at');
+            $table->timestamp('ends_at');
             $table->boolean('is_active')->default(true);
-            $table->string('front_image')->nullable();
-            $table->string('back_image')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('templates');
+        Schema::dropIfExists('pack_offers');
     }
 };
