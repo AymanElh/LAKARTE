@@ -1,0 +1,71 @@
+models:
+  Pack:
+    name: string
+    slug: string unique
+    description: text
+    type: enum:standard,pro,sur_mesure
+    price: decimal:8,2
+    delivery_time_days: integer
+    is_active: boolean default:true
+    highlight: boolean default:false
+    image_path: string nullable
+    features: json nullable
+    timestamps
+    softDeletes
+
+    relationships:
+      hasMany: Order, Template, PackOffer
+
+
+  PackOffer:
+    pack_id: id
+    title: string
+    description: text
+    type: enum:discount,free_item,bundle
+    value: string
+    starts_at: timestamp
+    ends_at: timestamp
+    is_active: boolean default:true
+    timestamps: timestamps
+    relationships:
+      belongsTo: Pack
+
+
+  Template:
+    pack_id: id
+    name: string
+    description: text nullable
+    recto_path: string nullable
+    verso_path: string nullable
+    is_active: boolean default:true
+    preview_path: string nullable
+    tags: json nullable
+    timestamps: timestamps
+    softDeletes: softDeletes
+    relationships:
+      belongsTo: Pack
+      hasMany: Order
+
+
+  Order:
+    user_id: id
+    pack_id: id
+    template_id: id
+    client_name: string
+    client_email: string
+    phone: string
+    city: string
+    neighborhood: string
+    orientation: string nullable
+    color: string nullable
+    quantity: integer
+    status: enum:pending,in_progress,paid,shipped,canceled default:pending
+    logo_path: string nullable
+    brief_path: string nullable
+    payment_proof_path: string nullable
+    channel: enum:whatsapp,form default:form
+    timestamps
+    softDeletes
+
+    relationships:
+      belongsTo: User,Pack,Order
