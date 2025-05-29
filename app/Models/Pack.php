@@ -30,6 +30,15 @@ class Pack extends Model
     ];
 
     /**
+     * Cast the 'features' attribute to an array for automatic serialization/deserialization
+     *
+     * @var array
+     */
+    protected $casts = [
+        'features' => 'array',
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

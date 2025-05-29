@@ -15,6 +15,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -31,6 +32,13 @@ class PackResource extends Resource
 {
     protected static ?string $model = Pack::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Gestion de produits';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $navigationLabel = 'Packs';
+    protected static ?string $pluralModelLabel = 'Packs';
+
+
 
     public static function form(Form $form): Form
     {
@@ -289,27 +297,58 @@ class PackResource extends Resource
                     })
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->tooltip('Modifier ce pack'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->tooltip('Supprimer ce pack')
+                    ->successNotification(
+                        Notification::make()
+                            ->title('Pack supprimé')
+                            ->body('Le pack a été déplacé dans les éléments supprimés.')
+                            ->success()
+                    ),
 
-                Tables\Actions\Action::make('toggleStatus')
-                    ->label(fn(Pack $record): string => $record->is_active ? 'Desactiver' : 'Activer')
-                    ->icon(fn(Pack $record): string => $record->is_active ? 'heroicon-m-eye-slash' : 'heroicon-m-eye')
-                    ->color(fn(Pack $record): string => $record->is_active ? 'warning' : 'success')
-                    ->requiresConfirmation()
-                    ->action(fn(Pack $record) => $record->update(['is_active' => !$record->is_active])),
+                Tables\Actions\RestoreAction::make()
+                    ->label('')
+                    ->icon('heroicon-o-arrow-path')
+                    ->tooltip('Restaurer')
+                    ->color('success')
+                    ->visible(fn ($record) => !is_null($record->deleted_at))
+                    ->successNotification(
+                        Notification::make()
+                            ->title('Pack restauré')
+                            ->body('Le Pack a ete restauré avec success')
+                            ->success()
+                    ),
+
+                Tables\Actions\ForceDeleteAction::make()
+                    ->label('')
+                    ->icon('heroicon-o-trash')
+                    ->tooltip('Supprimer Définitivement')
+                    ->color('danger')
+                    ->visible(fn ($record) => !is_null($record->deleted_at)),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Supprimer Sélectionnés'),
 
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make()
+                        ->label('Supprimer Définitivement'),
+
+                    Tables\Actions\RestoreBulkAction::make()
+                        ->label('Restaurer Sélectionnés'),
+
+
 
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'asc')
+            ->striped()
+            ->paginated([10, 25, 50])
+            ->recordClasses(fn() => 'py-10');
     }
 
     public static function getRelations(): array
@@ -341,4 +380,11 @@ class PackResource extends Resource
     {
         return static::getModel()::count();
     }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'success';
+    }
+
+
 }
