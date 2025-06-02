@@ -18,7 +18,9 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderResource extends Resource
@@ -376,7 +378,14 @@ class OrderResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Supprimer Sélectionnés'),
+
+                    Tables\Actions\ForceDeleteBulkAction::make()
+                        ->label('Supprimer Définitivement'),
+
+                    Tables\Actions\RestoreBulkAction::make()
+                        ->label('Restaurer Sélectionnés'),
                 ]),
             ])
             ->recordUrl(fn($record): string => static::getUrl('view', ['record' => $record]))
@@ -399,6 +408,47 @@ class OrderResource extends Resource
             'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
             'view' => Pages\ViewOrder::route('/{record}'),
+        ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'pending')->count();
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'warning';
+    }
+
+    public static function canGloballySearch(): bool
+    {
+        return true;
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['client_name', 'client_email', 'phone', 'city'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return 'Command #' . $record->id . '-' . $record->client_name;
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Pack' => $record->pack?->name,
+            'Statut' => match ($record->status) {
+                'pending' => 'En attente',
+                'in_progress' => 'En cours',
+                'paid' => 'Payée',
+                'shipped' => 'Expédiée',
+                'canceled' => 'Annulée',
+                default => $record->status
+            },
+            'Date' => $record->created_at->format('d/m/Y'),
         ];
     }
 }
