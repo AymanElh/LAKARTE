@@ -169,11 +169,9 @@ class PackResource extends Resource
             ->columns([
                 ImageColumn::make('image_path')
                     ->label('Image')
-                    ->disk('public')
-                    ->visibility('public')
                     ->circular()
                     ->size(40)
-                    ->defaultImageUrl(asset('storage/app/public/packs/images/01JWBS7MSHXD711DCT8249CFV1.png')),
+                    ->getStateUsing(fn($record) => asset('storage/' . $record->image_path)),
 
                 TextColumn::make('name')
                     ->label('Nom du pack')
@@ -364,6 +362,7 @@ class PackResource extends Resource
             'index' => Pages\ListPacks::route('/'),
             'create' => Pages\CreatePack::route('/create'),
             'edit' => Pages\EditPack::route('/{record}/edit'),
+            'view' => Pages\ViewPack::route('/{record}')
         ];
     }
 
