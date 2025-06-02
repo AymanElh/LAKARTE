@@ -29,7 +29,6 @@ return new class extends Migration
             $table->string('brief_path')->nullable();
             $table->string('payment_proof_path')->nullable();
             $table->enum('channel', ["whatsapp","form"])->default('form');
-            $table->foreignId('order_id');
             $table->timestamps();
             $table->softDeletes();
         });
