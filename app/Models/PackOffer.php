@@ -36,8 +36,8 @@ class PackOffer extends Model
         return [
             'id' => 'integer',
             'pack_id' => 'integer',
-            'starts_at' => 'timestamp',
-            'ends_at' => 'timestamp',
+            'starts_at' => 'datetime',
+            'ends_at' => 'datetime',
             'is_active' => 'boolean',
         ];
     }

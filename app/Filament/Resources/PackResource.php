@@ -31,8 +31,8 @@ use Illuminate\Support\Str;
 class PackResource extends Resource
 {
     protected static ?string $model = Pack::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Gestion de produits';
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
+    protected static ?string $navigationGroup = 'Gestion des produits';
     protected static ?int $navigationSort = 1;
     protected static ?string $recordTitleAttribute = 'name';
     protected static ?string $navigationLabel = 'Packs';
@@ -169,11 +169,9 @@ class PackResource extends Resource
             ->columns([
                 ImageColumn::make('image_path')
                     ->label('Image')
-                    ->disk('public')
-                    ->visibility('public')
                     ->circular()
                     ->size(40)
-                    ->defaultImageUrl(asset('storage/app/public/packs/images/01JWBS7MSHXD711DCT8249CFV1.png')),
+                    ->getStateUsing(fn($record) => asset('storage/' . $record->image_path)),
 
                 TextColumn::make('name')
                     ->label('Nom du pack')
@@ -364,6 +362,7 @@ class PackResource extends Resource
             'index' => Pages\ListPacks::route('/'),
             'create' => Pages\CreatePack::route('/create'),
             'edit' => Pages\EditPack::route('/{record}/edit'),
+            'view' => Pages\ViewPack::route('/{record}')
         ];
     }
 
@@ -386,5 +385,28 @@ class PackResource extends Resource
         return 'success';
     }
 
+    public static function canGloballySearch(): bool
+    {
+        return true;
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'slug', 'price'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model|\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return $record->name;
+    }
+
+    public static function getGlobalSearchResultDetails(Model|\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Slug' => $record->slug,
+            'Type' => ucfirst($record->type),
+            'Price' => $record->price
+        ];
+    }
 
 }
