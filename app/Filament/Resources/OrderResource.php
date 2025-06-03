@@ -209,6 +209,30 @@ class OrderResource extends Resource
                     ->collapsible()
                     ->collapsed()
                     ->icon('heroicon-m-document'),
+
+                Section::make('Information du paiements')
+                    ->description('Status et validation du paiement')
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                Forms\Components\Placeholder::make('total_amount')
+                                    ->label('Montant Total')
+                                    ->content(fn(?Order $record): string => $record ? number_format($record->total_amount, 2) . 'DH' : 'Non calculé'),
+
+                                Forms\Components\Placeholder::make('payement_status')
+                                    ->label('Statut de paiement')
+                                    ->content(fn(?Order $record): string => $record && $record->hasValidPayment() ? '✅ Payé et Validé' : '⏳ En attente de paiement'),
+
+                                Forms\Components\Placeholder::make('payment_validations_count')
+                                    ->label('Tentatives de Paiement')
+                                    ->content(fn(?Order $record): string => $record ? (string)$record->paymentValidations()->count() : '0'),
+                            ])
+                    ])
+                    ->visible(fn(string $operation): bool => $operation === 'edit')
+                    ->collapsible()
+                    ->collapsed()
+                    ->icon('heroicon-m-banknotes')
+
             ]);
     }
 
@@ -248,7 +272,7 @@ class OrderResource extends Resource
                         'primary' => 'shipped',
                         'danger' => 'cancelled'
                     ])
-                    ->formatStateUsing(fn(String $state): string => match($state) {
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
                         'pending' => 'En attend',
                         'in_progress' => 'En cours',
                         'paid' => 'Payée',
@@ -263,7 +287,7 @@ class OrderResource extends Resource
                         'success' => 'whatsapp',
                         'primary' => 'form'
                     ])
-                    ->formatStateUsing(fn(String $state): string => match($state) {
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
                         'whatsapp' => 'Whatsapp',
                         'form' => 'Formulaire',
                         default => $state
@@ -374,7 +398,7 @@ class OrderResource extends Resource
                     ->icon('heroicon-o-trash')
                     ->tooltip('Supprimer Définitivement')
                     ->color('danger')
-                    ->visible(fn ($record) => !is_null($record->deleted_at)),
+                    ->visible(fn($record) => !is_null($record->deleted_at)),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
