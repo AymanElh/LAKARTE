@@ -49,4 +49,26 @@ class PaymentValidation extends Model
     {
         return $this->belongsTo(User::class, 'validated_by');
     }
+
+    public function approve(User $validator, ?string $notes): void
+    {
+        $this->update([
+            'validation_status' => 'approved',
+            'admin_notes' => $notes,
+            'validate_by' => $validator->id,
+            'validated_at' => now()
+        ]);
+
+        $this->order->update(['status' => 'paid']);
+    }
+
+    public function reject(User $validator, ?string $notes): void
+    {
+        $this->update([
+            'validation_status' => 'rejected',
+            'admin_notes' => $notes,
+            'validated_by' => $validator,
+            'validated_at' => now()
+        ]);
+    }
 }

@@ -36,4 +36,9 @@ class PaymentSetting extends Model
             'is_active' => 'boolean',
         ];
     }
+
+    public static function getActive()
+    {
+        return self::where('is_active', true)->first();
+    }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('client_notes')->nullable();
             $table->enum('validation_status', ["pending","approved","rejected"])->default('pending');
             $table->text('admin_notes')->nullable();
-            $table->foreignId('validated_by')->constrained('users')->onDelete('set null');
+            $table->foreignId('validated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('validate_at')->nullable();
             $table->timestamps();
         });

@@ -14,6 +14,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -22,8 +23,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Notifications\Notification;
 
 class PaymentValidationResource extends Resource
 {
@@ -120,6 +119,13 @@ class PaymentValidationResource extends Resource
                     ->schema([
                         Forms\Components\Placeholder::make('bank_info')
                             ->label('')
+                            ->content(function() {
+                                $paymentSetting = PaymentSetting::getActive();
+                                if(!$paymentSetting) {
+                                    return 'Aucun RIB configuré. Veuillez configurer les paramètres de paiement.';
+                                }
+                                return view('filament.components.bank-info', compact('paymentSetting'));
+                            })
                             ->columnSpanFull(),
                     ])
                     ->icon('heroicon-m-building-library')
@@ -141,8 +147,7 @@ class PaymentValidationResource extends Resource
                     ->label('Commande')
                     ->sortable()
                     ->prefix('#')
-                    ->url(fn(PaymentValidation $record): string => route('filament.admin.resources.orders.edit', $record->order)
-                    ),
+                    ->url(fn(PaymentValidation $record): string => route('filament.admin.resources.orders.edit', $record->order)),
 
                 TextColumn::make('order.client_name')
                     ->label('Client')
@@ -290,5 +295,20 @@ class PaymentValidationResource extends Resource
             'create' => Pages\CreatePaymentValidation::route('/create'),
             'edit' => Pages\EditPaymentValidation::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('validation_status', 'pending')->count();
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'warning';
+    }
+
+    public static function canAccess(): bool
+    {
+            return auth()->user()->hasAnyRole(['super_admin', 'support']);
     }
 }
