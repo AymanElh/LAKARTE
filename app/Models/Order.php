@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
@@ -70,5 +71,22 @@ class Order extends Model
     public function template(): BelongsTo
     {
         return $this->belongsTo(Template::class);
+    }
+
+    public function paymentValidations(): HasMany
+    {
+        return $this->hasMany(PaymentValidation::class);
+    }
+
+    public function hasValidPayment(): bool
+    {
+        return $this->paymentValidations()
+            ->where('validation_status', 'approved')
+            ->exists();
+    }
+
+    public function getTotalAmountAttribute(): float
+    {
+        return (float) $this->pack->price * $this->quantity;
     }
 }
