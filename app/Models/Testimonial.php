@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Testimonial extends Model
 {
@@ -48,4 +49,18 @@ class Testimonial extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function getClientFullNameAttribute(): string
+    {
+        $name = $this->client_name;
+        if($this->client_title) {
+            $name .= ', ' . $this->client_title;
+        }
+
+        if($this->client_company) {
+            $name .= '- ' . $this->client_company;
+        }
+        return Str::limit($name, 30);
+    }
+
 }
