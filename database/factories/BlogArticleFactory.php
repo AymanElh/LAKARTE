@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\BlogCategory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -10,267 +12,295 @@ use Illuminate\Support\Str;
  */
 class BlogArticleFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    public function definition()
     {
-        $categoryNames = [
+        $articleTitles = [
             [
-                'fr' => 'Actualités Tech',
-                'ar' => 'أخبار التقنية',
-                'en' => 'Tech News'
+                'fr' => 'L\'avenir de l\'Intelligence Artificielle au Maroc',
+                'ar' => 'مستقبل الذكاء الاصطناعي في المغرب',
+                'en' => 'The Future of AI in Morocco'
             ],
             [
-                'fr' => 'Design & Créativité',
-                'ar' => 'التصميم والإبداع',
-                'en' => 'Design & Creativity'
+                'fr' => 'Tendances Design 2025 : Ce qu\'il faut retenir',
+                'ar' => 'اتجاهات التصميم 2025: ما يجب تذكره',
+                'en' => 'Design Trends 2025: What to Remember'
             ],
             [
-                'fr' => 'Business & Marketing',
-                'ar' => 'الأعمال والتسويق',
-                'en' => 'Business & Marketing'
+                'fr' => 'Comment développer une startup tech réussie',
+                'ar' => 'كيفية تطوير شركة تقنية ناشئة ناجحة',
+                'en' => 'How to Build a Successful Tech Startup'
             ],
             [
-                'fr' => 'Développement Web',
-                'ar' => 'تطوير الويب',
-                'en' => 'Web Development'
+                'fr' => 'Les meilleures pratiques du développement web moderne',
+                'ar' => 'أفضل ممارسات تطوير الويب الحديث',
+                'en' => 'Best Practices in Modern Web Development'
             ],
             [
-                'fr' => 'Intelligence Artificielle',
-                'ar' => 'الذكاء الاصطناعي',
-                'en' => 'Artificial Intelligence'
+                'fr' => 'E-commerce au Maroc : Opportunités et défis',
+                'ar' => 'التجارة الإلكترونية في المغرب: الفرص والتحديات',
+                'en' => 'E-commerce in Morocco: Opportunities and Challenges'
             ],
             [
-                'fr' => 'E-commerce',
-                'ar' => 'التجارة الإلكترونية',
-                'en' => 'E-commerce'
+                'fr' => 'Sécurité informatique : Protéger votre entreprise',
+                'ar' => 'الأمن السيبراني: حماية شركتك',
+                'en' => 'Cybersecurity: Protecting Your Business'
             ],
             [
-                'fr' => 'Mobile & Apps',
-                'ar' => 'الهاتف المحمول والتطبيقات',
-                'en' => 'Mobile & Apps'
+                'fr' => 'L\'importance du branding pour les PME',
+                'ar' => 'أهمية العلامة التجارية للشركات الصغيرة والمتوسطة',
+                'en' => 'The Importance of Branding for SMEs'
             ],
             [
-                'fr' => 'Sécurité Informatique',
-                'ar' => 'الأمن السيبراني',
-                'en' => 'Cybersecurity'
+                'fr' => 'Applications mobiles : Tendances et innovations',
+                'ar' => 'تطبيقات الهاتف المحمول: الاتجاهات والابتكارات',
+                'en' => 'Mobile Apps: Trends and Innovations'
             ],
             [
-                'fr' => 'Startups & Innovation',
-                'ar' => 'الشركات الناشئة والابتكار',
-                'en' => 'Startups & Innovation'
+                'fr' => 'Cloud Computing : Révolutionner l\'entreprise',
+                'ar' => 'الحوسبة السحابية: ثورة في عالم الأعمال',
+                'en' => 'Cloud Computing: Revolutionizing Business'
             ],
             [
-                'fr' => 'Formation & Éducation',
-                'ar' => 'التدريب والتعليم',
-                'en' => 'Training & Education'
-            ],
-            [
-                'fr' => 'Réseaux Sociaux',
-                'ar' => 'وسائل التواصل الاجتماعي',
-                'en' => 'Social Media'
-            ],
-            [
-                'fr' => 'Cloud Computing',
-                'ar' => 'الحوسبة السحابية',
-                'en' => 'Cloud Computing'
-            ],
-            [
-                'fr' => 'Data Science',
-                'ar' => 'علم البيانات',
-                'en' => 'Data Science'
-            ],
-            [
-                'fr' => 'UX/UI Design',
-                'ar' => 'تصميم تجربة المستخدم',
-                'en' => 'UX/UI Design'
-            ],
-            [
-                'fr' => 'Blockchain & Crypto',
-                'ar' => 'البلوك تشين والعملات المشفرة',
-                'en' => 'Blockchain & Crypto'
+                'fr' => 'Marketing digital : Stratégies gagnantes 2025',
+                'ar' => 'التسويق الرقمي: استراتيجيات رابحة 2025',
+                'en' => 'Digital Marketing: Winning Strategies 2025'
             ],
         ];
 
-        $categoryDescriptions = [
-            [
-                'fr' => 'Les dernières actualités du monde de la technologie et innovations',
-                'ar' => 'آخر أخبار عالم التكنولوجيا والابتكارات',
-                'en' => 'Latest news from the tech world and innovations'
-            ],
-            [
-                'fr' => 'Inspirations et conseils en design graphique et créativité',
-                'ar' => 'إلهامات ونصائح في التصميم الجرافيكي والإبداع',
-                'en' => 'Inspirations and tips in graphic design and creativity'
-            ],
-            [
-                'fr' => 'Stratégies et conseils pour entreprises et marketing digital',
-                'ar' => 'استراتيجيات ونصائح للشركات والتسويق الرقمي',
-                'en' => 'Strategies and advice for businesses and digital marketing'
-            ],
-            [
-                'fr' => 'Tutoriels et techniques de développement web moderne',
-                'ar' => 'دروس وتقنيات تطوير الويب الحديثة',
-                'en' => 'Tutorials and modern web development techniques'
-            ],
-            [
-                'fr' => 'Exploration des technologies d\'intelligence artificielle',
-                'ar' => 'استكشاف تقنيات الذكاء الاصطناعي',
-                'en' => 'Exploring artificial intelligence technologies'
-            ],
+        $selectedTitle = fake()->randomElement($articleTitles);
+
+        $frenchParagraphs = [
+            'L\'innovation technologique transforme rapidement notre façon de travailler et de vivre. Les entreprises marocaines doivent s\'adapter à ces changements pour rester compétitives.',
+            'Dans un monde de plus en plus connecté, la digitalisation devient une nécessité plutôt qu\'un luxe. Les organisations qui embrassent le changement prospèrent.',
+            'La créativité et l\'innovation sont au cœur de toute stratégie réussie. Il est essentiel de repenser nos approches traditionnelles.',
+            'Les technologies émergentes offrent des opportunités sans précédent pour les entrepreneurs visionnaires.',
+            'L\'expérience utilisateur reste primordiale dans le développement de tout produit ou service numérique.',
         ];
 
-        $icons = [
-            'heroicon-o-computer-desktop',
-            'heroicon-o-camera',
-            'heroicon-o-briefcase',
-            'heroicon-o-code-bracket',
-            'heroicon-o-cpu-chip',
-            'heroicon-o-shopping-cart',
-            'heroicon-o-device-phone-mobile',
-            'heroicon-o-shield-check',
-            'heroicon-o-light-bulb',
-            'heroicon-o-academic-cap',
-            'heroicon-o-megaphone',
-            'heroicon-o-cloud',
-            'heroicon-o-chart-bar',
-            'heroicon-o-paint-brush',
-            'heroicon-o-currency-bitcoin',
+        $arabicParagraphs = [
+            'تحول الابتكار التقني بسرعة طريقة عملنا وحياتنا. يجب على الشركات المغربية التكيف مع هذه التغييرات للبقاء قادرة على المنافسة.',
+            'في عالم متصل بشكل متزايد، تصبح الرقمنة ضرورة وليس رفاهية. المنظمات التي تتبنى التغيير تزدهر.',
+            'الإبداع والابتكار في قلب أي استراتيجية ناجحة. من الضروري إعادة التفكير في مناهجنا التقليدية.',
+            'التقنيات الناشئة توفر فرصًا غير مسبوقة لرجال الأعمال ذوي الرؤية.',
+            'تجربة المستخدم تبقى أساسية في تطوير أي منتج أو خدمة رقمية.',
         ];
 
-        $colors = [
-            '#3B82F6', // Blue
-            '#8B5CF6', // Purple
-            '#10B981', // Green
-            '#F59E0B', // Yellow
-            '#EF4444', // Red
-            '#6366F1', // Indigo
-            '#EC4899', // Pink
-            '#14B8A6', // Teal
-            '#F97316', // Orange
-            '#84CC16', // Lime
-            '#06B6D4', // Cyan
-            '#8B5A2B', // Brown
-            '#6B7280', // Gray
-            '#DC2626', // Red-600
-            '#7C3AED', // Violet
+        $englishParagraphs = [
+            'Technological innovation is rapidly transforming how we work and live. Moroccan companies must adapt to these changes to remain competitive.',
+            'In an increasingly connected world, digitalization becomes a necessity rather than a luxury. Organizations that embrace change thrive.',
+            'Creativity and innovation are at the heart of any successful strategy. It\'s essential to rethink our traditional approaches.',
+            'Emerging technologies offer unprecedented opportunities for visionary entrepreneurs.',
+            'User experience remains paramount in developing any digital product or service.',
         ];
 
-        $selectedCategory = fake()->randomElement($categoryNames);
-        $selectedDescription = fake()->randomElement($categoryDescriptions);
+        $content = [
+            'fr' => '<p>' . implode('</p><p>', fake()->randomElements($frenchParagraphs, fake()->numberBetween(3, 5))) . '</p>',
+            'ar' => '<p>' . implode('</p><p>', fake()->randomElements($arabicParagraphs, fake()->numberBetween(3, 5))) . '</p>',
+            'en' => '<p>' . implode('</p><p>', fake()->randomElements($englishParagraphs, fake()->numberBetween(3, 5))) . '</p>',
+        ];
+
+        $excerpt = [
+            'fr' => fake()->text(200),
+            'ar' => 'هذا نص تجريبي باللغة العربية يوضح محتوى المقال والأفكار الرئيسية التي يتناولها.',
+            'en' => fake()->text(200),
+        ];
+
+        $tags = [
+            'Technologie', 'Innovation', 'Design', 'Business', 'Marketing',
+            'Développement', 'Startup', 'Digital', 'IA', 'Mobile',
+            'Web', 'E-commerce', 'Sécurité', 'Cloud', 'UX/UI'
+        ];
+
+        $status = fake()->randomElement(['draft', 'published', 'scheduled']);
+        $publishedAt = null;
+        $scheduledAt = null;
+
+        if ($status === 'published') {
+            $publishedAt = fake()->dateTimeBetween('-6 months', 'now');
+        } else {
+            $publishedAt = fake()->dateTimeBetween('now', '+1 month');
+        }
 
         return [
-            'name' => $selectedCategory,
+            'category_id' => BlogCategory::factory(),
+            'author_id' => User::factory(),
+            'title' => $selectedTitle,
             'slug' => [
-                'fr' => Str::slug($selectedCategory['fr']),
-                'ar' => Str::slug($selectedCategory['ar']),
-                'en' => Str::slug($selectedCategory['en'])
+                'fr' => Str::slug($selectedTitle['fr']),
+                'ar' => Str::slug($selectedTitle['ar']),
+                'en' => Str::slug($selectedTitle['en']),
             ],
-            'description' => $selectedDescription,
-            'icon' => fake()->randomElement($icons),
-            'is_active' => fake()->boolean(85),
+            'excerpt' => $excerpt,
+            'content' => $content,
+            'meta_title' => [
+                'fr' => Str::limit($selectedTitle['fr'], 55),
+                'ar' => Str::limit($selectedTitle['ar'], 55),
+                'en' => Str::limit($selectedTitle['en'], 55),
+            ],
+            'meta_description' => [
+                'fr' => Str::limit($excerpt['fr'], 155),
+                'ar' => Str::limit($excerpt['ar'], 155),
+                'en' => Str::limit($excerpt['en'], 155),
+            ],
+            'featured_image' => null, // Will be set by states if needed
+            'status' => $status,
+            'published_at' => $publishedAt,
+            'scheduled_at' => $scheduledAt,
+            'is_featured' => fake()->boolean(15), // 15% chance of being featured
+            'allow_comments' => fake()->boolean(80), // 80% allow comments
+            'tags' => fake()->randomElements($tags, fake()->numberBetween(2, 6)),
+            'views_count' => $status === 'published' ? fake()->numberBetween(0, 5000) : 0,
+            'reading_time' => fake()->numberBetween(2, 15), // 2-15 minutes
             'sort_order' => fake()->numberBetween(0, 100),
         ];
     }
 
     /**
-     * Indicate that the category is active.
+     * Indicates the article is published
+     *
+     * @return $this
      */
-    public function active(): static
+    public function published(): static
     {
         return $this->state(fn(array $attributes) => [
-            'is_active' => true,
+            'status' => 'published',
+            'published_at' => fake()->dateTimeBetween('-6 months', 'now'),
+            'scheduled_at' => null,
+            'views_count' => fake()->numberBetween(50, 5000)
         ]);
     }
 
     /**
-     * Indicate that the category is inactive.
+     * Indicate the article is draft
+     *
+     * @return $this
      */
-    public function inactive(): static
+    public function draft(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => false,
+        return $this->state(fn(array $attributes) => [
+            'status' => 'draft',
+            'published_at' => null,
+            'scheduled_at' => null,
+            'views_count' => 0,
         ]);
     }
 
     /**
-     * Create a tech-focused category.
+     * Indicate that the article is scheduled.
+     */
+    public function scheduled(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'scheduled',
+            'published_at' => null,
+            'scheduled_at' => fake()->dateTimeBetween('now', '+2 months'),
+            'views_count' => 0,
+        ]);
+    }
+
+    /**
+     * Indicate that the article is featured.
+     */
+    public function featured(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'is_featured' => true,
+        ]);
+    }
+
+    /**
+     * Add a featured image to the article.
+     */
+    public function withFeaturedImage(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'featured_image' => 'blog/featured-images/' . fake()->uuid() . '.jpg',
+        ]);
+    }
+
+    /**
+     * Create a tech-focused article.
      */
     public function tech(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'name' => [
-                'fr' => 'Technologie',
-                'ar' => 'التكنولوجيا',
-                'en' => 'Technology'
+        return $this->state(fn(array $attributes) => [
+            'title' => [
+                'fr' => 'Intelligence Artificielle : Révolution Technologique',
+                'ar' => 'الذكاء الاصطناعي: ثورة تقنية',
+                'en' => 'Artificial Intelligence: Technological Revolution'
             ],
             'slug' => [
-                'fr' => 'technologie',
-                'ar' => 'altiknulujia',
-                'en' => 'technology'
+                'fr' => 'intelligence-artificielle-revolution-technologique',
+                'ar' => 'aldhaka-alaisnaeii-thawra-tiqnia',
+                'en' => 'artificial-intelligence-technological-revolution'
             ],
-            'description' => [
-                'fr' => 'Tout sur les dernières innovations technologiques',
-                'ar' => 'كل شيء عن أحدث الابتكارات التكنولوجية',
-                'en' => 'Everything about the latest technological innovations'
-            ],
-            'icon' => 'heroicon-o-computer-desktop',
-            'color' => '#3B82F6',
+            'tags' => ['IA', 'Technologie', 'Innovation', 'Futur', 'Machine Learning'],
         ]);
     }
 
     /**
-     * Create a design-focused category.
+     * Create a design-focused article.
      */
     public function design(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'name' => [
-                'fr' => 'Design',
-                'ar' => 'التصميم',
-                'en' => 'Design'
+        return $this->state(fn(array $attributes) => [
+            'title' => [
+                'fr' => 'Tendances Design : L\'Art du Visuel Moderne',
+                'ar' => 'اتجاهات التصميم: فن البصري الحديث',
+                'en' => 'Design Trends: The Art of Modern Visuals'
             ],
             'slug' => [
-                'fr' => 'design',
-                'ar' => 'altasmim',
-                'en' => 'design'
+                'fr' => 'tendances-design-art-visuel-moderne',
+                'ar' => 'aitijahat-altasmim-fan-albasarii-alhadith',
+                'en' => 'design-trends-art-modern-visuals'
             ],
-            'description' => [
-                'fr' => 'Inspirations et tendances en design graphique',
-                'ar' => 'إلهامات واتجاهات التصميم الجرافيكي',
-                'en' => 'Inspirations and trends in graphic design'
-            ],
-            'icon' => 'heroicon-o-camera',
-            'color' => '#8B5CF6',
+            'tags' => ['Design', 'Créativité', 'Tendances', 'Visual', 'UX/UI'],
         ]);
     }
 
     /**
-     * Create a business-focused category.
+     * Create a business-focused article.
      */
     public function business(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'name' => [
-                'fr' => 'Business',
-                'ar' => 'الأعمال',
-                'en' => 'Business'
+        return $this->state(fn(array $attributes) => [
+            'title' => [
+                'fr' => 'Stratégies Business : Réussir en 2025',
+                'ar' => 'استراتيجيات الأعمال: النجاح في 2025',
+                'en' => 'Business Strategies: Succeeding in 2025'
             ],
             'slug' => [
-                'fr' => 'business',
-                'ar' => 'alaaemal',
-                'en' => 'business'
+                'fr' => 'strategies-business-reussir-2025',
+                'ar' => 'aistratijiiat-alaaemal-alnajah-fi-2025',
+                'en' => 'business-strategies-succeeding-2025'
             ],
-            'description' => [
-                'fr' => 'Conseils et stratégies pour entrepreneurs',
-                'ar' => 'نصائح واستراتيجيات لرجال الأعمال',
-                'en' => 'Tips and strategies for entrepreneurs'
-            ],
-            'icon' => 'heroicon-o-briefcase',
-            'color' => '#10B981',
+            'tags' => ['Business', 'Stratégie', 'Entrepreneuriat', 'Marketing', 'Croissance'],
+        ]);
+    }
+
+    /**
+     * Create an article with high engagement.
+     */
+    public function popular(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'published',
+            'published_at' => fake()->dateTimeBetween('-3 months', '-1 month'),
+            'is_featured' => true,
+            'views_count' => fake()->numberBetween(2000, 10000),
+            'allow_comments' => true,
+        ]);
+    }
+
+    /**
+     * Create a recent article.
+     */
+    public function recent(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'published',
+            'published_at' => fake()->dateTimeBetween('-1 week', 'now'),
+            'views_count' => fake()->numberBetween(10, 500),
         ]);
     }
 }
