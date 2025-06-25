@@ -108,7 +108,7 @@ class TestimonialCategoryResource extends Resource
                     ->label('Nom')
                     ->searchable()
                     ->weight(FontWeight::Medium)
-                    ->description(fn(TestimonialCategory $record): string => $record->description ? Str::limit($record->description, 50) : null),
+                    ->description(fn(TestimonialCategory $record): ?string => $record->description ? Str::limit($record->description, 50) : null),
 
                 Tables\Columns\ColorColumn::make('color')
                     ->label('Couleur'),

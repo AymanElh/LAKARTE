@@ -8,12 +8,16 @@ use App\Models\BlogArticle;
 use App\Models\BlogCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class BlogArticleResource extends Resource
@@ -42,7 +46,7 @@ class BlogArticleResource extends Resource
                                     ->preload()
                                     ->required()
                                     ->placeholder('Sélectionner une catégorie')
-                                    ->getOptionLabelFromRecordUsing(fn (BlogCategory $record): string => $record->getTranslation('name', app()->getLocale()) ?? $record->getTranslation('name', 'fr')),
+                                    ->getOptionLabelFromRecordUsing(fn(BlogCategory $record): string => $record->getTranslation('name', app()->getLocale()) ?? $record->getTranslation('name', 'fr')),
 
                                 Forms\Components\Select::make('author_id')
                                     ->label('Auteur')
@@ -70,13 +74,13 @@ class BlogArticleResource extends Resource
                             ->schema([
                                 Forms\Components\DateTimePicker::make('published_at')
                                     ->label('Date de publication')
-                                    ->visible(fn (Forms\Get $get): bool => $get('status') === 'published')
+                                    ->visible(fn(Forms\Get $get): bool => $get('status') === 'published')
                                     ->default(now()),
 
                                 Forms\Components\DateTimePicker::make('scheduled_at')
                                     ->label('Date de Planification')
-                                    ->visible(fn (Forms\Get $get): bool => $get('status') === 'scheduled')
-                                    ->required(fn (Forms\Get $get): bool => $get('status') === 'shceduled')
+                                    ->visible(fn(Forms\Get $get): bool => $get('status') === 'scheduled')
+                                    ->required(fn(Forms\Get $get): bool => $get('status') === 'shceduled')
                                     ->minDate(now()),
                             ]),
 
@@ -116,7 +120,7 @@ class BlogArticleResource extends Resource
                                             ->required()
                                             ->maxLength(255)
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn (Forms\Set $set, ?string $state, string $context) => $context === 'create' ? $set('slug.fr', Str::slug($state)) : null)
+                                            ->afterStateUpdated(fn(Forms\Set $set, ?string $state, string $context) => $context === 'create' ? $set('slug.fr', Str::slug($state)) : null)
                                             ->placeholder('Titre de l\'article en Francais'),
 
                                         Forms\Components\TextInput::make('slug.fr')
@@ -165,8 +169,7 @@ class BlogArticleResource extends Resource
                                             ->label('Title (English)')
                                             ->maxLength(255)
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(fn (Forms\Set $set, ?string $state) =>
-                                            $set('slug.en', Str::slug($state))
+                                            ->afterStateUpdated(fn(Forms\Set $set, ?string $state) => $set('slug.en', Str::slug($state))
                                             )
                                             ->placeholder('Article title in English'),
 
@@ -245,13 +248,14 @@ class BlogArticleResource extends Resource
                 Tables\Columns\ImageColumn::make('featured_image')
                     ->label('Image')
                     ->circular()
-                    ->size(50),
+                    ->size(50)
+                    ->getStateUsing(fn($record) => asset('storage/' . $record->featured_image)),
 
                 Tables\Columns\TextColumn::make('title')
                     ->label('Titre')
                     ->searchable()
                     ->weight(FontWeight::Medium)
-                    ->formatStateUsing(fn (BlogArticle $record): string => $record->getTranslation('title', app()->getLocale()) ?? $record->getTranslation('title', 'fr'))
+                    ->formatStateUsing(fn(BlogArticle $record): string => $record->getTranslation('title', app()->getLocale()) ?? $record->getTranslation('title', 'fr'))
                     ->description(function (BlogArticle $record): ?string {
                         $excerpt = $record->getTranslation('excerpt', app()->getLocale()) ?? $record->getTranslation('excerpt', 'fr');
                         return $excerpt ? Str::limit($excerpt, 50) : null;
@@ -261,8 +265,8 @@ class BlogArticleResource extends Resource
                 Tables\Columns\TextColumn::make('category.name')
                     ->label('Catégorie')
                     ->badge()
-                    ->formatStateUsing(fn (BlogArticle $record): string => $record->category->getTranslation('name', app()->getLocale()) ?? $record->category->getTranslation('name', 'fr'))
-                    ->color(fn (BlogArticle $record): string => $record->category->color ?? 'primary'),
+                    ->formatStateUsing(fn(BlogArticle $record): string => $record->category->getTranslation('name', app()->getLocale()) ?? $record->category->getTranslation('name', 'fr'))
+                    ->color(fn(BlogArticle $record): string => $record->category->color ?? 'primary'),
 
                 Tables\Columns\TextColumn::make('author.name')
                     ->label('Auteur')
@@ -277,7 +281,7 @@ class BlogArticleResource extends Resource
                         'success' => 'published',
                         'info' => 'scheduled'
                     ])
-                    ->formatStateUsing(fn (string $state): string => match($state) {
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
                         'draft' => '📝 Brouillon',
                         'published' => '✅ Publié',
                         'scheduled' => '⏰ Planifié',
@@ -291,7 +295,7 @@ class BlogArticleResource extends Resource
                         'warning' => true,
                         'gray' => false
                     ])
-                    ->formatStateUsing(fn (string $state): string => $state ? '⭐ Oui' : 'Non'),
+                    ->formatStateUsing(fn(string $state): string => $state ? '⭐ Oui' : 'Non'),
 
                 Tables\Columns\TextColumn::make('views_count')
                     ->label('Vues')
@@ -302,7 +306,7 @@ class BlogArticleResource extends Resource
 
                 Tables\Columns\TextColumn::make('reading_time')
                     ->label('Lecture')
-                    ->formatStateUsing(fn (?int $state): string => $state ? $state . ' min' : 'N/A')
+                    ->formatStateUsing(fn(?int $state): string => $state ? $state . ' min' : 'N/A')
                     ->alignCenter()
                     ->color('gray'),
 
@@ -326,10 +330,62 @@ class BlogArticleResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label('Catégorie')
+                    ->relationship('category', 'name', function (Builder $query) {
+                        $local = app()->getLocale() ?? 'fr';
+                        $query->orderByRaw("name->>'$local' ASC");
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->getOptionLabelFromRecordUsing(fn($record): string => $record->getTranslation('name', app()->getLocale()) ?? $record->getTranslation('name', 'fr')),
+
+                Tables\Filters\SelectFilter::make('author_id')
+                    ->label('Auteur')
+                    ->relationship('author', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Statut')
+                    ->options([
+                        'draft' => 'Brouillon',
+                        'published' => 'Publié',
+                        'scheduled' => 'Planifié',
+                    ]),
+
+                Tables\Filters\TernaryFilter::make('is_featured')
+                    ->label('En vedette')
+                    ->placeholder('Tous')
+                    ->trueLabel('En vedette seulement')
+                    ->falseLabel('Normaux seulement'),
+
+                Tables\Filters\Filter::make('published_at')
+                    ->label('Période de publication')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\DatePicker::make('published_from')
+                                    ->label('Du'),
+                                Forms\Components\DatePicker::make('published_until')
+                                    ->label('Au'),
+                            ])
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['published_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('published_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['published_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('published_at', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -351,6 +407,45 @@ class BlogArticleResource extends Resource
             'index' => Pages\ListBlogArticles::route('/'),
             'create' => Pages\CreateBlogArticle::route('/create'),
             'edit' => Pages\EditBlogArticle::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'draft')->count();
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'warning';
+    }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasAnyRole(['super_admin', 'redacteur', 'gestionaire']);
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'content', 'excerpt'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return $record->getTranslation('title', app()->getLocale() ?? $record->getTranslation('title', 'fr'));
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Auteur' => $record->author?->name,
+            'Catégorie' => $record->category->getTranslation('name', app()->getLocale()) ?? $record->category->getTranslation('name', 'fr'),
+            'Statut' => match ($record->status) {
+                'draft' => 'Brouillon',
+                'published' => 'Publié',
+                'scheduled' => 'Planifié',
+                default => $record->status
+            },
         ];
     }
 }
