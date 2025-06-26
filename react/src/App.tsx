@@ -11,16 +11,18 @@ import WhatsAppButton from './components/common/WhatsAppButton';
 // Pages
 import HomePage from './pages/HomePage';
 import BlogDetailPage from './pages/BlogDetailPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
 // Types
 import { CardOrientation, CardModelType, CardPackType, GoogleReviewCardType } from './types';
 
 function App() {
   const { t } = useTranslation();
-  
+
   // State to track the form's visibility and selected card type
   const [selectedCardType, setSelectedCardType] = useState<'nfc' | 'google' | null>(null);
-  
+
   // NFC Card form state
   const [nfcFormData, setNfcFormData] = useState({
     orientation: 'vertical' as CardOrientation,
@@ -36,7 +38,7 @@ function App() {
     logo: null as File | null,
     briefing: ''
   });
-  
+
   // Google Reviews form state
   const [googleFormData, setGoogleFormData] = useState({
     type: 'standard' as GoogleReviewCardType,
@@ -46,18 +48,18 @@ function App() {
     website: '',
     logo: null as File | null,
   });
-  
+
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
         <Header />
-        
+
         <main className="flex-grow">
           <Routes>
-            <Route 
-              path="/" 
+            <Route
+              path="/"
               element={
-                <HomePage 
+                <HomePage
                   selectedCardType={selectedCardType}
                   setSelectedCardType={setSelectedCardType}
                   nfcFormData={nfcFormData}
@@ -65,12 +67,12 @@ function App() {
                   googleFormData={googleFormData}
                   setGoogleFormData={setGoogleFormData}
                 />
-              } 
+              }
             />
             <Route path="/blog/:slug" element={<BlogDetailPage />} />
           </Routes>
         </main>
-        
+
         <Footer />
         <WhatsAppButton />
       </div>
