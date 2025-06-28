@@ -1,73 +1,62 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clock, Share2, Facebook, Twitter, Linkedin, MessageCircle } from 'lucide-react';
-
-// Sample blog data (in a real app, this would come from an API)
-const blogPosts = [
-  {
-    id: '1',
-    slug: 'comment-les-cartes-nfc-peuvent-revolutionner-votre-entreprise',
-    title: 'Comment les cartes NFC peuvent révolutionner votre entreprise',
-    excerpt: 'Découvrez comment les professionnels utilisent les cartes NFC pour booster leur image de marque et faciliter la prise de contact.',
-    content: `
-      <h2>L'importance du networking professionnel</h2>
-      <p>Dans le monde professionnel d'aujourd'hui, le networking est devenu un élément crucial pour le développement des affaires. Les cartes NFC représentent une évolution majeure dans la manière dont les professionnels échangent leurs coordonnées et créent des connexions.</p>
-      
-      <h2>Les avantages des cartes NFC</h2>
-      <ul>
-        <li>Partage instantané des coordonnées</li>
-        <li>Image professionnelle moderne</li>
-        <li>Mise à jour facile des informations</li>
-        <li>Respect de l'environnement</li>
-      </ul>
-      
-      <h2>Comment intégrer les cartes NFC dans votre stratégie</h2>
-      <p>L'intégration des cartes NFC dans votre stratégie de networking peut se faire de plusieurs manières. Voici quelques suggestions pour maximiser leur utilisation :</p>
-      
-      <ol>
-        <li>Personnalisez votre carte selon votre image de marque</li>
-        <li>Incluez tous vos points de contact importants</li>
-        <li>Utilisez des appels à l'action clairs</li>
-        <li>Mesurez l'impact de vos interactions</li>
-      </ol>
-    `,
-    date: '10 Mai 2025',
-    readTime: '5 min',
-    image: 'https://images.pexels.com/photos/6693655/pexels-photo-6693655.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    category: 'Business',
-    author: {
-      name: 'Sarah Martin',
-      role: 'Marketing Specialist',
-      image: 'https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-    },
-    relatedPosts: [
-      {
-        id: '2',
-        title: 'Les avantages des cartes Google Reviews pour les restaurants',
-        image: 'https://images.pexels.com/photos/2403391/pexels-photo-2403391.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        slug: 'les-avantages-des-cartes-google-reviews-pour-les-restaurants'
-      },
-      {
-        id: '3',
-        title: 'Guide de personnalisation: créez une carte NFC unique',
-        image: 'https://images.pexels.com/photos/4346312/pexels-photo-4346312.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        slug: 'guide-de-personnalisation-creez-une-carte-nfc-unique'
-      }
-    ]
-  }
-];
+import { ArrowLeft, Calendar, Clock, Share2, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { blogService, BlogArticle } from '../services/blogService';
 
 const BlogDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const post = blogPosts.find(post => post.slug === slug);
-  
-  if (!post) {
+  const [article, setArticle] = useState<BlogArticle | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const locale = 'fr'; // You can get this from context/i18n
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      if (!slug) return;
+      
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await blogService.getArticle(slug, {
+          with_related: true,
+          related_count: 3
+        });
+        
+        if (response.success) {
+          setArticle(response.data);
+        } else {
+          setError('Article non trouvé');
+        }
+      } catch (err) {
+        console.error('Error fetching article:', err);
+        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticle();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="container-custom py-20">
+        <div className="flex justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !article) {
     return (
       <div className="container-custom py-20">
         <h1>Article non trouvé</h1>
-        <Link to="/" className="text-gold-500 hover:text-gold-600">
-          Retour à l'accueil
+        <p className="text-gray-600 mb-4">{error}</p>
+        <Link to="/blog" className="text-gold-500 hover:text-gold-600">
+          Retour au blog
         </Link>
       </div>
     );
@@ -79,8 +68,8 @@ const BlogDetailPage: React.FC = () => {
       <div className="relative h-[60vh] min-h-[400px] mb-12">
         <div className="absolute inset-0">
           <img 
-            src={post.image} 
-            alt={post.title}
+            src={article.featured_image_url || 'https://images.pexels.com/photos/6693655/pexels-photo-6693655.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'} 
+            alt={blogService.formatArticleTitle(article, locale)}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary-900 to-transparent opacity-70" />
@@ -93,7 +82,7 @@ const BlogDetailPage: React.FC = () => {
             transition={{ duration: 0.6 }}
           >
             <Link 
-              to="/" 
+              to="/blog" 
               className="inline-flex items-center text-white mb-6 hover:text-gold-500 transition-colors"
             >
               <ArrowLeft size={20} className="mr-2" />
@@ -101,21 +90,25 @@ const BlogDetailPage: React.FC = () => {
             </Link>
             
             <span className="inline-block bg-gold-500 text-white text-sm px-3 py-1 rounded-full mb-4">
-              {post.category}
+              {article.category ? blogService.formatCategoryName(article.category, locale) : 'Blog'}
             </span>
             
             <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              {post.title}
+              {blogService.formatArticleTitle(article, locale)}
             </h1>
             
             <div className="flex items-center gap-6 text-white/90">
               <div className="flex items-center gap-2">
                 <Calendar size={18} />
-                <span>{post.date}</span>
+                <span>{new Date(article.published_at).toLocaleDateString('fr-FR', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock size={18} />
-                <span>{post.readTime} de lecture</span>
+                <span>{article.estimated_reading_time || `${article.reading_time || 5} min de lecture`}</span>
               </div>
             </div>
           </motion.div>
@@ -131,7 +124,7 @@ const BlogDetailPage: React.FC = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: blogService.formatArticleContent(article, locale) }}
             />
             
             {/* Author Box */}
@@ -142,14 +135,14 @@ const BlogDetailPage: React.FC = () => {
               className="mt-12 p-6 bg-primary-50 rounded-xl"
             >
               <div className="flex items-center gap-4">
-                <img 
-                  src={post.author.image} 
-                  alt={post.author.name}
-                  className="w-16 h-16 rounded-full object-cover"
-                />
+                <div className="w-16 h-16 rounded-full bg-primary-200 flex items-center justify-center">
+                  <span className="text-primary-600 font-semibold text-lg">
+                    {article.author?.name.charAt(0) || 'A'}
+                  </span>
+                </div>
                 <div>
-                  <h3 className="font-semibold text-lg">{post.author.name}</h3>
-                  <p className="text-primary-600">{post.author.role}</p>
+                  <h3 className="font-semibold text-lg">{article.author?.name || 'Auteur'}</h3>
+                  <p className="text-primary-600">Auteur</p>
                 </div>
               </div>
             </motion.div>
@@ -179,7 +172,7 @@ const BlogDetailPage: React.FC = () => {
                     <Facebook size={20} />
                   </a>
                   <a 
-                    href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${post.title}`}
+                    href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${blogService.formatArticleTitle(article, locale)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-primary-100 hover:bg-primary-200 p-3 rounded-lg transition-colors"
@@ -187,7 +180,7 @@ const BlogDetailPage: React.FC = () => {
                     <Twitter size={20} />
                   </a>
                   <a 
-                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}&title=${post.title}`}
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}&title=${blogService.formatArticleTitle(article, locale)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-primary-100 hover:bg-primary-200 p-3 rounded-lg transition-colors"
@@ -206,24 +199,28 @@ const BlogDetailPage: React.FC = () => {
               >
                 <h3 className="text-lg font-semibold mb-4">Articles similaires</h3>
                 <div className="space-y-4">
-                  {post.relatedPosts.map(relatedPost => (
-                    <Link 
-                      key={relatedPost.id}
-                      to={`/blog/${relatedPost.slug}`}
-                      className="group block"
-                    >
-                      <div className="aspect-video rounded-lg overflow-hidden mb-2">
-                        <img 
-                          src={relatedPost.image} 
-                          alt={relatedPost.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                      <h4 className="font-medium group-hover:text-gold-500 transition-colors">
-                        {relatedPost.title}
-                      </h4>
-                    </Link>
-                  ))}
+                  {article.related_articles && article.related_articles.length > 0 ? (
+                    article.related_articles.map((relatedArticle: BlogArticle) => (
+                      <Link 
+                        key={relatedArticle.id}
+                        to={`/blog/${blogService.formatArticleSlug(relatedArticle, locale)}`}
+                        className="group block"
+                      >
+                        <div className="aspect-video rounded-lg overflow-hidden mb-2">
+                          <img 
+                            src={relatedArticle.featured_image_url || 'https://images.pexels.com/photos/6693655/pexels-photo-6693655.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'} 
+                            alt={blogService.formatArticleTitle(relatedArticle, locale)}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                        <h4 className="font-medium group-hover:text-gold-500 transition-colors">
+                          {blogService.formatArticleTitle(relatedArticle, locale)}
+                        </h4>
+                      </Link>
+                    ))
+                  ) : (
+                    <p className="text-gray-500">Aucun article similaire disponible</p>
+                  )}
                 </div>
               </motion.div>
               

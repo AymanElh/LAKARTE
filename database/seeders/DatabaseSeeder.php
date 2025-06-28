@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 
         // Create super_admin role if it doesn't exist
         $this->command->info('Creating super_admin role if not exists...');
-        if(!Role::where('name', 'super_admin')->exists()) {
+        if (!Role::where('name', 'super_admin')->exists()) {
             Role::create(['name' => 'super_admin']);
             $this->command->info('super_admin role created.');
         } else {
@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Creating super_admin user if not exists...');
         $adminEmail = 'ayman@gmail.com';
 
-        if(!User::where('email', $adminEmail)->exists()) {
+        if (!User::where('email', $adminEmail)->exists()) {
             $user = User::create([
                 'name' => 'ayman',
                 'email' => $adminEmail,
@@ -67,6 +67,7 @@ class DatabaseSeeder extends Seeder
         // Call other seeders
         $this->call([
             PackSeeder::class,
+            BlogSeeder::class,
         ]);
 
         $this->command->info('Database seeding completed successfully!');
