@@ -12,6 +12,7 @@ import WhatsAppButton from './components/common/WhatsAppButton';
 
 // Pages
 import HomePage from './pages/HomePage';
+import BlogPage from './pages/BlogPage';
 import BlogDetailPage from './pages/BlogDetailPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -70,6 +71,7 @@ function App() {
                   />
                 } 
               />
+              <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogDetailPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />

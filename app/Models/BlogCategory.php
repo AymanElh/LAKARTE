@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
+use App\Traits\JsonQueryHelper;
 
 class BlogCategory extends Model
 {
-    use HasFactory, HasTranslations;
+    use HasFactory, HasTranslations, JsonQueryHelper;
     protected $fillable = [
         'name',
         'slug',
@@ -28,4 +30,9 @@ class BlogCategory extends Model
     ];
 
     public array $translatable = ['name', 'slug', 'description'];
+
+    public function articles(): HasMany
+    {
+        return $this->hasMany(BlogArticle::class, 'category_id');
+    }
 }
