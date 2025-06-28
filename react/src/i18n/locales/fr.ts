@@ -98,6 +98,25 @@ export default {
   'payment.access': 'Vous recevrez un accès à votre landing page personnalisée',
   'payment.validate': 'Valider la commande',
   
+  // Authentication
+  'auth.signIn': 'Se connecter',
+  'auth.signUp': 'S\'inscrire',
+  'auth.logout': 'Se déconnecter',
+  'auth.email': 'Email',
+  'auth.password': 'Mot de passe',
+  'auth.confirmPassword': 'Confirmer le mot de passe',
+  'auth.name': 'Nom complet',
+  'auth.emailPlaceholder': 'Entrez votre email',
+  'auth.passwordPlaceholder': 'Entrez votre mot de passe',
+  'auth.confirmPasswordPlaceholder': 'Confirmez votre mot de passe',
+  'auth.namePlaceholder': 'Entrez votre nom complet',
+  'auth.forgotPassword': 'Mot de passe oublié ?',
+  'auth.dontHaveAccount': 'Vous n\'avez pas de compte ?',
+  'auth.alreadyHaveAccount': 'Vous avez déjà un compte ?',
+  'auth.signingIn': 'Connexion en cours...',
+  'auth.signingUp': 'Création du compte...',
+  'auth.passwordMismatch': 'Les mots de passe ne correspondent pas',
+  
   // Delivery
   'delivery.title': 'Informations de livraison',
   'delivery.name': 'Nom complet',

@@ -1,21 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Menu, X, ChevronDown, User, LogOut } from 'lucide-react';
 import { languageOptions } from '../../i18n';
+import { useAuth } from '../../hooks/useAuth';
 import Logo from './Logo';
 
 const Header: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleLangDropdown = () => setIsLangDropdownOpen(!isLangDropdownOpen);
+  const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
   
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     setIsLangDropdownOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setIsUserDropdownOpen(false);
   };
   
   useEffect(() => {
@@ -89,6 +99,56 @@ const Header: React.FC = () => {
               </div>
             )}
           </div>
+          
+          {isAuthenticated ? (
+            <div className="relative">
+              <button 
+                className="flex items-center space-x-2 text-primary-800 hover:text-gold-500"
+                onClick={toggleUserDropdown}
+              >
+                <User size={20} />
+                <span>{user?.name}</span>
+                <ChevronDown size={16} />
+              </button>
+              
+              {isUserDropdownOpen && (
+                <div className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-lg py-2 w-48">
+                  <a
+                    href="http://localhost:8080/admin"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full text-left px-4 py-2 hover:bg-gold-50 flex items-center space-x-2"
+                    onClick={() => setIsUserDropdownOpen(false)}
+                  >
+                    <User size={16} />
+                    <span>Admin Dashboard</span>
+                  </a>
+                  <button
+                    className="w-full text-left px-4 py-2 hover:bg-gold-50 flex items-center space-x-2"
+                    onClick={handleLogout}
+                  >
+                    <LogOut size={16} />
+                    <span>{t('auth.logout')}</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center space-x-4">
+              <Link 
+                to="/login" 
+                className="text-primary-800 hover:text-gold-500 transition-colors"
+              >
+                {t('auth.signIn')}
+              </Link>
+              <Link 
+                to="/register" 
+                className="btn btn-primary"
+              >
+                {t('auth.signUp')}
+              </Link>
+            </div>
+          )}
           
           <a href="#customize" className="btn btn-primary">
             {t('hero.cta')}
@@ -172,6 +232,49 @@ const Header: React.FC = () => {
                   </button>
                 ))}
               </div>
+              
+              {isAuthenticated ? (
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center space-x-2 text-primary-700">
+                    <User size={20} />
+                    <span>{user?.name}</span>
+                  </div>
+                  <a 
+                    href="http://localhost:8080/admin"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-primary-600 hover:text-gold-500"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <User size={16} />
+                    <span>Admin Dashboard</span>
+                  </a>
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 text-primary-600 hover:text-gold-500"
+                  >
+                    <LogOut size={16} />
+                    <span>{t('auth.logout')}</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-2">
+                  <Link 
+                    to="/login" 
+                    className="text-primary-800 hover:text-gold-500"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('auth.signIn')}
+                  </Link>
+                  <Link 
+                    to="/register" 
+                    className="btn btn-primary inline-block"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {t('auth.signUp')}
+                  </Link>
+                </div>
+              )}
               
               <a 
                 href="#customize" 

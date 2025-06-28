@@ -98,6 +98,25 @@ export default {
   'payment.access': 'ستتلقى حق الوصول إلى صفحة الهبوط المخصصة الخاصة بك',
   'payment.validate': 'تأكيد الطلب',
   
+  // Authentication
+  'auth.signIn': 'تسجيل الدخول',
+  'auth.signUp': 'إنشاء حساب',
+  'auth.logout': 'تسجيل الخروج',
+  'auth.email': 'البريد الإلكتروني',
+  'auth.password': 'كلمة المرور',
+  'auth.confirmPassword': 'تأكيد كلمة المرور',
+  'auth.name': 'الاسم الكامل',
+  'auth.emailPlaceholder': 'أدخل بريدك الإلكتروني',
+  'auth.passwordPlaceholder': 'أدخل كلمة المرور',
+  'auth.confirmPasswordPlaceholder': 'أكد كلمة المرور',
+  'auth.namePlaceholder': 'أدخل اسمك الكامل',
+  'auth.forgotPassword': 'نسيت كلمة المرور؟',
+  'auth.dontHaveAccount': 'ليس لديك حساب؟',
+  'auth.alreadyHaveAccount': 'لديك حساب بالفعل؟',
+  'auth.signingIn': 'جاري تسجيل الدخول...',
+  'auth.signingUp': 'جاري إنشاء الحساب...',
+  'auth.passwordMismatch': 'كلمات المرور غير متطابقة',
+  
   // Delivery
   'delivery.title': 'معلومات التوصيل',
   'delivery.name': 'الاسم الكامل',

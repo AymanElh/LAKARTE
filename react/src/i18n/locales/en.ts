@@ -98,6 +98,25 @@ export default {
   'payment.access': 'You will receive access to your custom landing page',
   'payment.validate': 'Validate order',
   
+  // Authentication
+  'auth.signIn': 'Sign In',
+  'auth.signUp': 'Sign Up',
+  'auth.logout': 'Logout',
+  'auth.email': 'Email',
+  'auth.password': 'Password',
+  'auth.confirmPassword': 'Confirm Password',
+  'auth.name': 'Full Name',
+  'auth.emailPlaceholder': 'Enter your email',
+  'auth.passwordPlaceholder': 'Enter your password',
+  'auth.confirmPasswordPlaceholder': 'Confirm your password',
+  'auth.namePlaceholder': 'Enter your full name',
+  'auth.forgotPassword': 'Forgot your password?',
+  'auth.dontHaveAccount': "Don't have an account?",
+  'auth.alreadyHaveAccount': 'Already have an account?',
+  'auth.signingIn': 'Signing in...',
+  'auth.signingUp': 'Creating account...',
+  'auth.passwordMismatch': 'Passwords do not match',
+  
   // Delivery
   'delivery.title': 'Delivery information',
   'delivery.name': 'Full name',
