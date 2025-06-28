@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { blogService, BlogArticle, BlogCategory, PaginatedResponse } from '../services/blogService';
+import { getLocalizedText, getLocalizedSlug, getCurrentLocale } from '../utils/multilingual';
 
 const BlogPage: React.FC = () => {
+  const { t } = useTranslation();
   const [articles, setArticles] = useState<PaginatedResponse<BlogArticle> | null>(null);
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +15,7 @@ const BlogPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
-  const locale = 'fr';
+  const currentLocale = getCurrentLocale();
 
   const fetchArticles = async (page: number = 1, search?: string, category?: string) => {
     try {
@@ -41,21 +44,21 @@ const BlogPage: React.FC = () => {
     }
   };
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
-      const response = await blogService.getCategories({ with_count: true, locale });
+      const response = await blogService.getCategories({ with_count: true, locale: currentLocale });
       if (response.success) {
         setCategories(response.data);
       }
     } catch (err) {
       console.error('Error fetching categories:', err);
     }
-  };
+  }, [currentLocale]);
 
   useEffect(() => {
     fetchArticles();
     fetchCategories();
-  }, []);
+  }, [fetchCategories]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -152,9 +155,9 @@ const BlogPage: React.FC = () => {
                 {categories.map((category) => (
                   <option 
                     key={category.id} 
-                    value={blogService.formatCategorySlug(category, locale)}
+                    value={getLocalizedSlug(category.slug, currentLocale)}
                   >
-                    {blogService.formatCategoryName(category, locale)} 
+                    {getLocalizedText(category.name, currentLocale)} 
                     {category.articles_count ? ` (${category.articles_count})` : ''}
                   </option>
                 ))}
@@ -180,11 +183,11 @@ const BlogPage: React.FC = () => {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
-                  <Link to={`/blog/${blogService.formatArticleSlug(article, locale)}`}>
+                  <Link to={`/blog/${getLocalizedSlug(article.slug, currentLocale)}`}>
                     <div className="aspect-video overflow-hidden">
                       <img
                         src={article.featured_image_url || 'https://images.pexels.com/photos/6693655/pexels-photo-6693655.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}
-                        alt={blogService.formatArticleTitle(article, locale)}
+                        alt={getLocalizedText(article.title, currentLocale)}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -196,18 +199,18 @@ const BlogPage: React.FC = () => {
                         className="inline-block text-xs px-2 py-1 rounded-full mb-3 text-white"
                         style={{ backgroundColor: article.category.color === 'primary' ? '#1a365d' : article.category.color }}
                       >
-                        {blogService.formatCategoryName(article.category, locale)}
+                        {getLocalizedText(article.category.name, currentLocale)}
                       </span>
                     )}
 
-                    <Link to={`/blog/${blogService.formatArticleSlug(article, locale)}`}>
+                    <Link to={`/blog/${getLocalizedSlug(article.slug, currentLocale)}`}>
                       <h2 className="text-xl font-bold mb-3 hover:text-gold-500 transition-colors">
-                        {blogService.formatArticleTitle(article, locale)}
+                        {getLocalizedText(article.title, currentLocale)}
                       </h2>
                     </Link>
 
                     <p className="text-gray-600 mb-4 line-clamp-3">
-                      {blogService.formatArticleExcerpt(article, locale)}
+                      {getLocalizedText(article.excerpt, currentLocale)}
                     </p>
 
                     <div className="flex items-center justify-between text-sm text-gray-500">
@@ -215,11 +218,14 @@ const BlogPage: React.FC = () => {
                         <div className="flex items-center gap-1">
                           <Calendar size={16} />
                           <span>
-                            {new Date(article.published_at).toLocaleDateString('fr-FR', {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric'
-                            })}
+                            {new Date(article.published_at).toLocaleDateString(
+                              currentLocale === 'ar' ? 'ar-SA' : currentLocale === 'en' ? 'en-US' : 'fr-FR', 
+                              {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                              }
+                            )}
                           </span>
                         </div>
                         <div className="flex items-center gap-1">

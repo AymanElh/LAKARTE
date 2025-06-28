@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Clock, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { blogService, BlogArticle } from '../../services/blogService';
+import { getLocalizedText, getLocalizedSlug, getCurrentLocale } from '../../utils/multilingual';
 
 const BlogSection: React.FC = () => {
+  const { t } = useTranslation();
   const [articles, setArticles] = useState<BlogArticle[]>([]);
   const [loading, setLoading] = useState(true);
-  const locale = 'fr';
+  const currentLocale = getCurrentLocale();
   
   const { ref, inView } = useInView({
     threshold: 0.1,
@@ -67,12 +70,12 @@ const BlogSection: React.FC = () => {
                 <div className="aspect-video relative">
                   <img 
                     src={article.featured_image_url || 'https://images.pexels.com/photos/6693655/pexels-photo-6693655.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'} 
-                    alt={blogService.formatArticleTitle(article, locale)}
+                    alt={getLocalizedText(article.title, currentLocale)}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-gold-500 text-white text-xs font-medium rounded-full">
-                      {article.category ? blogService.formatCategoryName(article.category, locale) : 'Blog'}
+                      {article.category ? getLocalizedText(article.category.name, currentLocale) : 'Blog'}
                     </span>
                   </div>
                 </div>
@@ -80,7 +83,7 @@ const BlogSection: React.FC = () => {
                   <div className="flex items-center text-primary-500 text-sm mb-2">
                     <Calendar size={16} className="mr-1" />
                     <span>
-                      {new Date(article.published_at).toLocaleDateString('fr-FR', {
+                      {new Date(article.published_at).toLocaleDateString(currentLocale === 'ar' ? 'ar-SA' : currentLocale === 'en' ? 'en-US' : 'fr-FR', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
@@ -93,18 +96,18 @@ const BlogSection: React.FC = () => {
                     </span>
                   </div>
                   <h3 className="font-semibold mb-2 hover:text-gold-500 transition-colors">
-                    <Link to={`/blog/${blogService.formatArticleSlug(article, locale)}`}>
-                      {blogService.formatArticleTitle(article, locale)}
+                    <Link to={`/blog/${getLocalizedSlug(article.slug, currentLocale)}`}>
+                      {getLocalizedText(article.title, currentLocale)}
                     </Link>
                   </h3>
                   <p className="text-primary-600 text-sm line-clamp-3 mb-4">
-                    {blogService.formatArticleExcerpt(article, locale)}
+                    {getLocalizedText(article.excerpt, currentLocale)}
                   </p>
                   <Link 
-                    to={`/blog/${blogService.formatArticleSlug(article, locale)}`}
+                    to={`/blog/${getLocalizedSlug(article.slug, currentLocale)}`}
                     className="text-gold-500 text-sm font-medium hover:text-gold-600 transition-colors"
                   >
-                    Lire la suite →
+                    {t('readMore', 'Lire la suite')} →
                   </Link>
                 </div>
               </motion.article>

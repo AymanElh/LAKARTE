@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Clock, Share2, Facebook, Twitter, Linkedin } from 'lucide-react';
 import { blogService, BlogArticle } from '../services/blogService';
+import { getLocalizedText, getLocalizedSlug, getCurrentLocale } from '../utils/multilingual';
 
 const BlogDetailPage: React.FC = () => {
+  const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const [article, setArticle] = useState<BlogArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const locale = 'fr'; // You can get this from context/i18n
+  const currentLocale = getCurrentLocale();
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -69,7 +72,7 @@ const BlogDetailPage: React.FC = () => {
         <div className="absolute inset-0">
           <img 
             src={article.featured_image_url || 'https://images.pexels.com/photos/6693655/pexels-photo-6693655.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'} 
-            alt={blogService.formatArticleTitle(article, locale)}
+            alt={getLocalizedText(article.title, currentLocale)}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary-900 to-transparent opacity-70" />
@@ -86,15 +89,15 @@ const BlogDetailPage: React.FC = () => {
               className="inline-flex items-center text-white mb-6 hover:text-gold-500 transition-colors"
             >
               <ArrowLeft size={20} className="mr-2" />
-              Retour au blog
+              {t('backToBlog', 'Retour au blog')}
             </Link>
             
             <span className="inline-block bg-gold-500 text-white text-sm px-3 py-1 rounded-full mb-4">
-              {article.category ? blogService.formatCategoryName(article.category, locale) : 'Blog'}
+              {article.category ? getLocalizedText(article.category.name, currentLocale) : 'Blog'}
             </span>
             
             <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              {blogService.formatArticleTitle(article, locale)}
+              {getLocalizedText(article.title, currentLocale)}
             </h1>
             
             <div className="flex items-center gap-6 text-white/90">
@@ -124,7 +127,7 @@ const BlogDetailPage: React.FC = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: blogService.formatArticleContent(article, locale) }}
+              dangerouslySetInnerHTML={{ __html: getLocalizedText(article.content || article.excerpt, currentLocale) }}
             />
             
             {/* Author Box */}
@@ -172,7 +175,7 @@ const BlogDetailPage: React.FC = () => {
                     <Facebook size={20} />
                   </a>
                   <a 
-                    href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${blogService.formatArticleTitle(article, locale)}`}
+                    href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${getLocalizedText(article.title, currentLocale)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-primary-100 hover:bg-primary-200 p-3 rounded-lg transition-colors"
@@ -180,7 +183,7 @@ const BlogDetailPage: React.FC = () => {
                     <Twitter size={20} />
                   </a>
                   <a 
-                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}&title=${blogService.formatArticleTitle(article, locale)}`}
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}&title=${getLocalizedText(article.title, currentLocale)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-primary-100 hover:bg-primary-200 p-3 rounded-lg transition-colors"
@@ -203,23 +206,23 @@ const BlogDetailPage: React.FC = () => {
                     article.related_articles.map((relatedArticle: BlogArticle) => (
                       <Link 
                         key={relatedArticle.id}
-                        to={`/blog/${blogService.formatArticleSlug(relatedArticle, locale)}`}
+                        to={`/blog/${getLocalizedSlug(relatedArticle.slug, currentLocale)}`}
                         className="group block"
                       >
                         <div className="aspect-video rounded-lg overflow-hidden mb-2">
                           <img 
                             src={relatedArticle.featured_image_url || 'https://images.pexels.com/photos/6693655/pexels-photo-6693655.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'} 
-                            alt={blogService.formatArticleTitle(relatedArticle, locale)}
+                            alt={getLocalizedText(relatedArticle.title, currentLocale)}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         </div>
                         <h4 className="font-medium group-hover:text-gold-500 transition-colors">
-                          {blogService.formatArticleTitle(relatedArticle, locale)}
+                          {getLocalizedText(relatedArticle.title, currentLocale)}
                         </h4>
                       </Link>
                     ))
                   ) : (
-                    <p className="text-gray-500">Aucun article similaire disponible</p>
+                    <p className="text-gray-500">{t('noRelatedArticles', 'Aucun article similaire disponible')}</p>
                   )}
                 </div>
               </motion.div>
