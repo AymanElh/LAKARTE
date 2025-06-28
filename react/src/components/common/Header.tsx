@@ -27,6 +27,14 @@ const Header: React.FC = () => {
     await logout();
     setIsUserDropdownOpen(false);
   };
+
+  const handleAdminAccess = () => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      window.open(`http://localhost:8080/admin-redirect?_token=${token}`, '_blank');
+    }
+    setIsUserDropdownOpen(false);
+  };
   
   useEffect(() => {
     const handleScroll = () => {
@@ -113,16 +121,13 @@ const Header: React.FC = () => {
               
               {isUserDropdownOpen && (
                 <div className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-lg py-2 w-48">
-                  <a
-                    href="http://localhost:8080/admin"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={handleAdminAccess}
                     className="w-full text-left px-4 py-2 hover:bg-gold-50 flex items-center space-x-2"
-                    onClick={() => setIsUserDropdownOpen(false)}
                   >
                     <User size={16} />
                     <span>Admin Dashboard</span>
-                  </a>
+                  </button>
                   <button
                     className="w-full text-left px-4 py-2 hover:bg-gold-50 flex items-center space-x-2"
                     onClick={handleLogout}
@@ -239,16 +244,16 @@ const Header: React.FC = () => {
                     <User size={20} />
                     <span>{user?.name}</span>
                   </div>
-                  <a 
-                    href="http://localhost:8080/admin"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button 
+                    onClick={() => {
+                      handleAdminAccess();
+                      setIsMenuOpen(false);
+                    }}
                     className="flex items-center space-x-2 text-primary-600 hover:text-gold-500"
-                    onClick={() => setIsMenuOpen(false)}
                   >
                     <User size={16} />
                     <span>Admin Dashboard</span>
-                  </a>
+                  </button>
                   <button 
                     onClick={handleLogout}
                     className="flex items-center space-x-2 text-primary-600 hover:text-gold-500"

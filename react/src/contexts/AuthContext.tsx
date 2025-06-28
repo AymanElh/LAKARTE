@@ -24,12 +24,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      if (authService.isAuthenticated()) {
+      const token = localStorage.getItem('auth_token');
+      if (token && authService.isAuthenticated()) {
         try {
           const userData = await authService.getUser();
           setUser(userData);
         } catch (error) {
           console.error('Failed to get user:', error);
+          // Clear invalid token
+          localStorage.removeItem('auth_token');
           authService.logout();
         }
       }

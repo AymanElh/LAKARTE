@@ -41,6 +41,7 @@ class AuthService {
 
   private async makeRequest(endpoint: string, options: RequestInit = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
+    console.log('Making request to:', url);
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -49,21 +50,27 @@ class AuthService {
 
     if (this.token) {
       headers['Authorization'] = `Bearer ${this.token}`;
+      console.log('Using token:', this.token.substring(0, 10) + '...');
     }
 
     try {
       const response = await fetch(url, {
         ...options,
         headers,
-        mode: 'cors', // Explicitly set CORS mode
+        mode: 'cors',
       });
 
+      console.log('Response status:', response.status);
+      
       if (!response.ok) {
         const error = await response.json().catch(() => ({ message: 'An error occurred' }));
+        console.error('API Error:', error);
         throw new Error(error.message || `HTTP error! status: ${response.status}`);
       }
 
-      return response.json();
+      const data = await response.json();
+      console.log('Response data:', data);
+      return data;
     } catch (error) {
       console.error('Auth Service Error:', error);
       if (error instanceof TypeError && error.message.includes('fetch')) {
@@ -114,7 +121,8 @@ class AuthService {
   }
 
   async getUser(): Promise<User> {
-    return this.makeRequest('/me');
+    const response = await this.makeRequest('/me');
+    return response.data?.user || response.user || response;
   }
 
   isAuthenticated(): boolean {

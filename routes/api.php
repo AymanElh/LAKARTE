@@ -11,7 +11,7 @@ Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthenticatedSessionContro
 Route::post('/forgot-password', [\App\Http\Controllers\Api\Auth\PasswordResetLinkController::class, 'store']);
 Route::post('/reset-password', [\App\Http\Controllers\Api\Auth\NewPasswordController::class, 'resetPassword'])->name('password.reset');
 
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [\App\Http\Controllers\Api\Auth\AuthenticatedSessionController::class, 'show']);
     Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthenticatedSessionController::class, 'destroy']);
 });
