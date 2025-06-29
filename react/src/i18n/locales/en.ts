@@ -20,8 +20,12 @@ export default {
   'gallery.cards': 'NFC Cards',
   
   // Testimonials Section
-  'testimonials.title': 'Video Testimonials',
-  'testimonials.subtitle': 'Hear what our customers say about us',
+  'testimonials.title': 'Customer Testimonials',
+  'testimonials.subtitle': 'Discover our customers\' experiences',
+  'testimonials.shareExperience': 'Share your experience',
+  'testimonials.shareTestimonials': 'Share these testimonials',
+  'testimonials.modal.title': 'Share your experience',
+  'testimonials.modal.description': 'Send us your video testimonial and share your experience with LAKARTE!',
   'testimonials.more': 'See more',
   
   // NFC Animation

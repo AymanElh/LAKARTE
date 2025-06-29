@@ -92,7 +92,11 @@ interface GetCategoriesParams extends Record<string, unknown> {
 class TestimonialService {
   private async fetchApi<T>(endpoint: string, params?: Record<string, unknown>): Promise<ApiResponse<T>> {
     try {
-      const url = new URL(endpoint, API_BASE_URL);
+      // Ensure proper URL construction
+      const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+      const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+      const fullUrl = `${baseUrl}${cleanEndpoint}`;
+      const url = new URL(fullUrl);
       
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
@@ -102,6 +106,8 @@ class TestimonialService {
         });
       }
 
+      console.log('Fetching URL:', url.toString()); // Debug log
+
       const response = await fetch(url.toString(), {
         method: 'GET',
         headers: {
@@ -110,14 +116,25 @@ class TestimonialService {
         },
       });
 
+      console.log('Response status:', response.status); // Debug log
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText);
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
 
       const data = await response.json();
+      console.log('API Response:', data); // Debug log
       return data;
     } catch (error) {
       console.error('API call failed:', error);
+      
+      // Provide more specific error messages
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('Network error: Cannot connect to server. Please check if the Laravel server is running on port 8080.');
+      }
+      
       throw error;
     }
   }

@@ -20,10 +20,13 @@ export default {
   'gallery.cards': 'Cartes NFC',
   
   // Testimonials Section
-  'testimonials.title': 'Témoignages vidéo',
-  'testimonials.subtitle': 'Écoutez ce que nos clients disent de nous',
-  'testimonials.more': 'Voir plus',
-  
+  'testimonials.title': 'Témoignages Clients',
+  'testimonials.subtitle': 'Découvrez les retours d\'expérience de nos clients',
+  'testimonials.shareExperience': 'Partager votre expérience',
+  'testimonials.shareTestimonials': 'Partager ces témoignages',
+  'testimonials.modal.title': 'Partagez votre expérience',
+  'testimonials.modal.description': 'Envoyez-nous votre vidéo témoignage et partagez votre expérience avec LAKARTE !',
+
   // NFC Animation
   'nfc.title': 'Comment ça fonctionne',
   'nfc.subtitle': 'Une technologie simple et efficace',
