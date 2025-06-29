@@ -68,6 +68,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PackSeeder::class,
             BlogSeeder::class,
+            TestimonialSeeder::class,
         ]);
 
         $this->command->info('Database seeding completed successfully!');
