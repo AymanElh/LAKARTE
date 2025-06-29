@@ -40,3 +40,22 @@ Route::prefix('blog')->group(function () {
     Route::get('/authors', [\App\Http\Controllers\Api\BlogStatsController::class, 'authors']);
     Route::get('/authors/{authorId}/articles', [\App\Http\Controllers\Api\BlogStatsController::class, 'authorArticles']);
 });
+
+// Testimonials API routes (public)
+Route::prefix('testimonials')->group(function () {
+
+    // Get all testimonials with filtering
+    Route::get('/', [\App\Http\Controllers\Api\TestimonialController::class, 'index']);
+
+    // Get featured testimonials for homepage
+    Route::get('/featured', [\App\Http\Controllers\Api\TestimonialController::class, 'featured']);
+
+    // Get testimonials by category
+    Route::get('/category/{categorySlug}', [\App\Http\Controllers\Api\TestimonialController::class, 'byCategory']);
+
+    // Get testimonial categories
+    Route::get('/categories', [\App\Http\Controllers\Api\TestimonialController::class, 'categories']);
+
+    // Get testimonials stats
+    Route::get('/stats', [\App\Http\Controllers\Api\TestimonialController::class, 'stats']);
+});

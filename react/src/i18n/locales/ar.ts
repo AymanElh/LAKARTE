@@ -20,8 +20,12 @@ export default {
   'gallery.cards': 'بطاقات NFC',
   
   // Testimonials Section
-  'testimonials.title': 'شهادات الفيديو',
-  'testimonials.subtitle': 'اسمع ما يقوله عملاؤنا عنا',
+  'testimonials.title': 'شهادات العملاء',
+  'testimonials.subtitle': 'اكتشف تجارب عملائنا',
+  'testimonials.shareExperience': 'شارك تجربتك',
+  'testimonials.shareTestimonials': 'شارك هذه الشهادات',
+  'testimonials.modal.title': 'شارك تجربتك',
+  'testimonials.modal.description': 'أرسل لنا شهادة الفيديو الخاصة بك وشارك تجربتك مع LAKARTE!',
   'testimonials.more': 'المزيد',
   
   // NFC Animation
