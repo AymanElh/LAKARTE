@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Authentication routes
@@ -58,4 +57,43 @@ Route::prefix('testimonials')->group(function () {
 
     // Get testimonials stats
     Route::get('/stats', [\App\Http\Controllers\Api\TestimonialController::class, 'stats']);
+});
+
+// Packs API routes (public)
+Route::prefix('packs')->group(function () {
+    // Get all active packs
+    Route::get('/', [\App\Http\Controllers\Api\PackController::class, 'index']);
+
+    // Get specific pack by slug
+    Route::get('/{slug}', [\App\Http\Controllers\Api\PackController::class, 'show']);
+});
+
+// Templates API routes (public)
+Route::prefix('templates')->group(function () {
+    // Get all active templates
+    Route::get('/', [\App\Http\Controllers\Api\TemplateController::class, 'index']);
+
+    // Get specific template
+    Route::get('/{id}', [\App\Http\Controllers\Api\TemplateController::class, 'show']);
+
+    // Get templates by pack slug
+    Route::get('/pack/{packSlug}', [\App\Http\Controllers\Api\TemplateController::class, 'byPack']);
+});
+
+// Orders API routes (mixed public/protected)
+Route::prefix('orders')->group(function () {
+    // Create order (public - no auth required)
+    Route::post('/', [\App\Http\Controllers\Api\OrderController::class, 'store']);
+
+    // Protected routes (require authentication)
+    Route::middleware('auth:sanctum')->group(function () {
+        // Get user orders
+        Route::get('/', [\App\Http\Controllers\Api\OrderController::class, 'index']);
+
+        // Get specific order
+        Route::get('/{id}', [\App\Http\Controllers\Api\OrderController::class, 'show']);
+
+        // Upload payment proof
+        Route::post('/{id}/payment-proof', [\App\Http\Controllers\Api\OrderController::class, 'uploadPaymentProof']);
+    });
 });
