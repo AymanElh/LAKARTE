@@ -66,6 +66,18 @@ Route::prefix('packs')->group(function () {
 
     // Get specific pack by slug
     Route::get('/{slug}', [\App\Http\Controllers\Api\PackController::class, 'show']);
+
+    // Get offers for a specific pack
+    Route::get('/{packId}/offers', [\App\Http\Controllers\Api\PackOfferController::class, 'byPack']);
+});
+
+// Pack Offers API routes (public)
+Route::prefix('pack-offers')->group(function () {
+    // Get all active pack offers
+    Route::get('/', [\App\Http\Controllers\Api\PackOfferController::class, 'index']);
+
+    // Get specific pack offer
+    Route::get('/{id}', [\App\Http\Controllers\Api\PackOfferController::class, 'show']);
 });
 
 // Templates API routes (public)

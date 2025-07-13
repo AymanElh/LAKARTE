@@ -87,6 +87,9 @@ class Order extends Model
 
     public function getTotalAmountAttribute(): float
     {
+        if($this->pack === null) {
+            return 0.0;
+        }
         return (float) $this->pack->price * $this->quantity;
     }
 }
