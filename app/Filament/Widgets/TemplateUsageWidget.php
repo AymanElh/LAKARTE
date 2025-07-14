@@ -44,6 +44,22 @@ class TemplateUsageWidget extends ChartWidget
             ->limit(10)
             ->get();
 
+        // Handle empty data case
+        if ($templateStats->isEmpty()) {
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Nombre d\'utilisations',
+                        'data' => [0],
+                        'backgroundColor' => ['#E5E7EB'],
+                        'borderColor' => ['#E5E7EB'],
+                        'borderWidth' => 1,
+                    ],
+                ],
+                'labels' => ['Aucune donnée disponible'],
+            ];
+        }
+
         // Calculate revenue per template
         $templateData = [];
         foreach ($templateStats as $stat) {
@@ -54,12 +70,14 @@ class TemplateUsageWidget extends ChartWidget
                     ->with('pack')
                     ->get();
 
-                $revenue = $orders->sum('total_amount');
+                $revenue = $orders->sum(function($order) {
+                    return $order->total_amount ?? 0;
+                });
 
                 $templateData[] = [
                     'name' => $stat->template->name,
                     'pack_name' => $stat->template->pack->name,
-                    'pack_type' => $stat->template->pack->type,
+                    'pack_type' => $stat->template->pack->type ?? 'standard',
                     'usage_count' => $stat->usage_count,
                     'revenue' => $revenue,
                 ];
@@ -71,7 +89,6 @@ class TemplateUsageWidget extends ChartWidget
         }, $templateData);
 
         $usageCounts = array_column($templateData, 'usage_count');
-        $revenues = array_column($templateData, 'revenue');
 
         // Color coding by pack type
         $colors = array_map(function($template) {
@@ -94,14 +111,12 @@ class TemplateUsageWidget extends ChartWidget
                 ],
             ],
             'labels' => $labels,
-            'revenueData' => $revenues,
-            'templateData' => $templateData,
         ];
     }
 
     protected function getType(): string
     {
-        return 'horizontalBar';
+        return 'bar';
     }
 
     protected function getOptions(): array
@@ -114,18 +129,7 @@ class TemplateUsageWidget extends ChartWidget
                     'display' => false,
                 ],
                 'tooltip' => [
-                    'callbacks' => [
-                        'label' => "function(context) {
-                            const revenues = context.chart.data.revenueData;
-                            const revenue = revenues[context.dataIndex] || 0;
-                            const templateData = context.chart.data.templateData[context.dataIndex];
-                            return [
-                                'Utilisations: ' + context.parsed.x,
-                                'Revenus: ' + Math.round(revenue) + ' DH',
-                                'Pack: ' + templateData.pack_name + ' (' + templateData.pack_type + ')'
-                            ];
-                        }"
-                    ],
+                    'enabled' => true,
                 ],
             ],
             'scales' => [
@@ -145,6 +149,7 @@ class TemplateUsageWidget extends ChartWidget
                     ],
                 ],
             ],
+            'maintainAspectRatio' => false,
         ];
     }
 
