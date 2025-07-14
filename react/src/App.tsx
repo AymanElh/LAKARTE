@@ -16,6 +16,8 @@ import BlogPage from './pages/BlogPage';
 import BlogDetailPage from './pages/BlogDetailPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import PacksPage from './pages/PacksPage';
+import TemplatesPage from './pages/TemplatesPage';
 
 // Types
 import { CardOrientation, CardModelType, CardPackType, GoogleReviewCardType } from './types';
@@ -23,7 +25,7 @@ import { CardOrientation, CardModelType, CardPackType, GoogleReviewCardType } fr
 function App() {
   // State to track the form's visibility and selected card type
   const [selectedCardType, setSelectedCardType] = useState<'nfc' | 'google' | null>(null);
-  
+
   // NFC Card form state
   const [nfcFormData, setNfcFormData] = useState({
     orientation: 'vertical' as CardOrientation,
@@ -39,7 +41,7 @@ function App() {
     logo: null as File | null,
     briefing: ''
   });
-  
+
   // Google Reviews form state
   const [googleFormData, setGoogleFormData] = useState({
     type: 'standard' as GoogleReviewCardType,
@@ -49,19 +51,19 @@ function App() {
     website: '',
     logo: null as File | null,
   });
-  
+
   return (
     <AuthProvider>
       <Router>
         <div className="flex flex-col min-h-screen">
           <Header />
-          
+
           <main className="flex-grow">
             <Routes>
-              <Route 
-                path="/" 
+              <Route
+                path="/"
                 element={
-                  <HomePage 
+                  <HomePage
                     selectedCardType={selectedCardType}
                     setSelectedCardType={setSelectedCardType}
                     nfcFormData={nfcFormData}
@@ -69,15 +71,17 @@ function App() {
                     googleFormData={googleFormData}
                     setGoogleFormData={setGoogleFormData}
                   />
-                } 
+                }
               />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogDetailPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/packs" element={<PacksPage />} />
+              <Route path="/templates" element={<TemplatesPage />} />
             </Routes>
           </main>
-          
+
           <Footer />
           <WhatsAppButton />
         </div>

@@ -13,11 +13,11 @@ const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleLangDropdown = () => setIsLangDropdownOpen(!isLangDropdownOpen);
   const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
-  
+
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     setIsLangDropdownOpen(false);
@@ -35,23 +35,23 @@ const Header: React.FC = () => {
     }
     setIsUserDropdownOpen(false);
   };
-  
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
+
   const currentLang = languageOptions.find(lang => lang.code === i18n.language) || languageOptions[0];
-  
+
   return (
     <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'}`}>
       <div className="container-custom flex justify-between items-center">
         <Logo />
-        
+
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <ul className="flex space-x-6">
@@ -59,6 +59,16 @@ const Header: React.FC = () => {
               <a href="#home" className="text-primary-900 hover:text-gold-500 transition-colors">
                 {t('nav.home')}
               </a>
+            </li>
+            <li>
+              <Link to="/packs" className="text-primary-900 hover:text-gold-500 transition-colors">
+                Packs
+              </Link>
+            </li>
+            <li>
+              <Link to="/templates" className="text-primary-900 hover:text-gold-500 transition-colors">
+                Templates
+              </Link>
             </li>
             <li>
               <a href="#gallery" className="text-primary-900 hover:text-gold-500 transition-colors">
@@ -81,9 +91,9 @@ const Header: React.FC = () => {
               </a>
             </li>
           </ul>
-          
+
           <div className="relative">
-            <button 
+            <button
               className="flex items-center space-x-1 text-primary-800 hover:text-gold-500"
               onClick={toggleLangDropdown}
             >
@@ -91,7 +101,7 @@ const Header: React.FC = () => {
               <span>{currentLang.code.toUpperCase()}</span>
               <ChevronDown size={16} />
             </button>
-            
+
             {isLangDropdownOpen && (
               <div className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-lg py-2 w-36">
                 {languageOptions.map((lang) => (
@@ -107,10 +117,10 @@ const Header: React.FC = () => {
               </div>
             )}
           </div>
-          
+
           {isAuthenticated ? (
             <div className="relative">
-              <button 
+              <button
                 className="flex items-center space-x-2 text-primary-800 hover:text-gold-500"
                 onClick={toggleUserDropdown}
               >
@@ -118,7 +128,7 @@ const Header: React.FC = () => {
                 <span>{user?.name}</span>
                 <ChevronDown size={16} />
               </button>
-              
+
               {isUserDropdownOpen && (
                 <div className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-lg py-2 w-48">
                   <button
@@ -140,29 +150,29 @@ const Header: React.FC = () => {
             </div>
           ) : (
             <div className="flex items-center space-x-4">
-              <Link 
-                to="/login" 
+              <Link
+                to="/login"
                 className="text-primary-800 hover:text-gold-500 transition-colors"
               >
                 {t('auth.signIn')}
               </Link>
-              <Link 
-                to="/register" 
+              <Link
+                to="/register"
                 className="btn btn-primary"
               >
                 {t('auth.signUp')}
               </Link>
             </div>
           )}
-          
+
           <a href="#customize" className="btn btn-primary">
             {t('hero.cta')}
           </a>
         </nav>
-        
+
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
-          <button 
+          <button
             className="text-primary-900 p-2"
             onClick={toggleMenu}
             aria-label="Toggle menu"
@@ -171,15 +181,15 @@ const Header: React.FC = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white shadow-lg">
           <div className="container-custom py-4">
             <ul className="space-y-4">
               <li>
-                <a 
-                  href="#home" 
+                <a
+                  href="#home"
                   className="block text-primary-900 hover:text-gold-500"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -187,8 +197,26 @@ const Header: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a 
-                  href="#gallery" 
+                <Link
+                  to="/packs"
+                  className="block text-primary-900 hover:text-gold-500"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Packs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/templates"
+                  className="block text-primary-900 hover:text-gold-500"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Templates
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="#gallery"
                   className="block text-primary-900 hover:text-gold-500"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -196,8 +224,8 @@ const Header: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a 
-                  href="#testimonials" 
+                <a
+                  href="#testimonials"
                   className="block text-primary-900 hover:text-gold-500"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -205,8 +233,8 @@ const Header: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a 
-                  href="#pricing" 
+                <a
+                  href="#pricing"
                   className="block text-primary-900 hover:text-gold-500"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -214,8 +242,8 @@ const Header: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a 
-                  href="#blog" 
+                <a
+                  href="#blog"
                   className="block text-primary-900 hover:text-gold-500"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -223,7 +251,7 @@ const Header: React.FC = () => {
                 </a>
               </li>
             </ul>
-            
+
             <div className="mt-4 flex flex-col space-y-4">
               <div className="flex space-x-4">
                 {languageOptions.map((lang) => (
@@ -237,14 +265,14 @@ const Header: React.FC = () => {
                   </button>
                 ))}
               </div>
-              
+
               {isAuthenticated ? (
                 <div className="flex flex-col space-y-2">
                   <div className="flex items-center space-x-2 text-primary-700">
                     <User size={20} />
                     <span>{user?.name}</span>
                   </div>
-                  <button 
+                  <button
                     onClick={() => {
                       handleAdminAccess();
                       setIsMenuOpen(false);
@@ -254,7 +282,7 @@ const Header: React.FC = () => {
                     <User size={16} />
                     <span>Admin Dashboard</span>
                   </button>
-                  <button 
+                  <button
                     onClick={handleLogout}
                     className="flex items-center space-x-2 text-primary-600 hover:text-gold-500"
                   >
@@ -264,15 +292,15 @@ const Header: React.FC = () => {
                 </div>
               ) : (
                 <div className="flex flex-col space-y-2">
-                  <Link 
-                    to="/login" 
+                  <Link
+                    to="/login"
                     className="text-primary-800 hover:text-gold-500"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {t('auth.signIn')}
                   </Link>
-                  <Link 
-                    to="/register" 
+                  <Link
+                    to="/register"
                     className="btn btn-primary inline-block"
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -280,9 +308,9 @@ const Header: React.FC = () => {
                   </Link>
                 </div>
               )}
-              
-              <a 
-                href="#customize" 
+
+              <a
+                href="#customize"
                 className="btn btn-primary inline-block"
                 onClick={() => setIsMenuOpen(false)}
               >
