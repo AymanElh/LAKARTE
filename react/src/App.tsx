@@ -17,6 +17,7 @@ import BlogDetailPage from './pages/BlogDetailPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PacksPage from './pages/PacksPage';
+import CustomizePage from './pages/CustomizePage';
 import TemplatesPage from './pages/TemplatesPage';
 
 // Types
@@ -75,6 +76,7 @@ function App() {
               />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogDetailPage />} />
+              <Route path="/customize" element={<CustomizePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/packs" element={<PacksPage />} />

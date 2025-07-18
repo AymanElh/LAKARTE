@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->nullable();
             $table->foreignId('pack_id');
             $table->foreignId('template_id');
             $table->string('client_name');
@@ -24,11 +24,11 @@ return new class extends Migration
             $table->string('orientation')->nullable();
             $table->string('color')->nullable();
             $table->integer('quantity');
-            $table->enum('status', ["pending","in_progress","paid","shipped","canceled"])->default('pending');
+            $table->enum('status', ["pending", "in_progress", "paid", "shipped", "canceled"])->default('pending');
             $table->string('logo_path')->nullable();
             $table->string('brief_path')->nullable();
             $table->string('payment_proof_path')->nullable();
-            $table->enum('channel', ["whatsapp","form"])->default('form');
+            $table->enum('channel', ["whatsapp", "form"])->default('form');
             $table->timestamps();
             $table->softDeletes();
         });

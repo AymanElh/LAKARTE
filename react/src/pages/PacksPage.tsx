@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import packService, { Pack } from '../services/packService';
-import packOfferService, { PackOffer } from '../services/packOfferService';
+import { packService, packOfferService, Pack, PackOffer } from '../services/packService';
 
 const PacksPage: React.FC = () => {
   const [packs, setPacks] = useState<Pack[]>([]);
@@ -17,7 +16,7 @@ const PacksPage: React.FC = () => {
         console.log('Fetching packs and offers...');
 
         // Fetch packs
-        const packsResponse = await packService.getPacks();
+        const packsResponse = await packService.getAllPacks();
         console.log('Packs API response:', packsResponse);
 
         if (packsResponse.success) {
@@ -28,9 +27,7 @@ const PacksPage: React.FC = () => {
           for (const pack of packsResponse.data) {
             try {
               const offersResponse = await packOfferService.getPackOffers(pack.id);
-              if (offersResponse.success) {
-                offersData[pack.id] = offersResponse.data;
-              }
+              offersData[pack.id] = offersResponse;
             } catch (offerError) {
               console.error(`Error fetching offers for pack ${pack.id}:`, offerError);
             }
@@ -228,15 +225,23 @@ const PacksPage: React.FC = () => {
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-2">Caractéristiques</h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-1">
-                      {selectedPack.features.map((feature, idx) => (
-                        <li key={idx}>
-                          {typeof feature === 'string' ? feature : (
-                            typeof feature === 'object' && feature !== null ?
-                              (feature.name || feature.title || JSON.stringify(feature)) :
-                              String(feature)
-                          )}
-                        </li>
-                      ))}
+                      {selectedPack.features.map((feature, idx) => {
+                        const getFeatureText = (feature: string | number | boolean | Record<string, unknown>): string => {
+                          if (typeof feature === 'string') return feature;
+                          if (typeof feature === 'number' || typeof feature === 'boolean') return String(feature);
+                          if (typeof feature === 'object' && feature !== null) {
+                            const obj = feature as Record<string, unknown>;
+                            return String(obj.name || obj.title || JSON.stringify(feature));
+                          }
+                          return String(feature);
+                        };
+
+                        return (
+                          <li key={idx}>
+                            {getFeatureText(feature)}
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 )}
@@ -275,7 +280,7 @@ const PacksPage: React.FC = () => {
                       // Here you can add navigation to order with this pack
                       closeModal();
                     }}
-                    className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded text-black shadow-md transition-colors"
+                    className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded shadow-md transition-colors"
                   >
                     Commander
                   </button>
