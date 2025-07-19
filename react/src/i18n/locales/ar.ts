@@ -197,4 +197,5 @@ export default {
   'customize.order.submitting': 'جاري إرسال الطلب...',
   'customize.order.success': 'تم إنشاء الطلب بنجاح!',
   'customize.order.error': 'خطأ في إنشاء الطلب',
+  'customize.order.validationError': 'يرجى التحقق من النموذج للأخطاء.',
 };

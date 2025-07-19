@@ -92,20 +92,17 @@ Route::prefix('templates')->group(function () {
     Route::get('/pack/{packSlug}', [\App\Http\Controllers\Api\TemplateController::class, 'byPack']);
 });
 
-// Orders API routes (mixed public/protected)
-Route::prefix('orders')->group(function () {
-    // Create order (public - no auth required)
+// Orders API routes (all require authentication)
+Route::prefix('orders')->middleware('auth:sanctum')->group(function () {
+    // Create order
     Route::post('/', [\App\Http\Controllers\Api\OrderController::class, 'store']);
 
-    // Protected routes (require authentication)
-    Route::middleware('auth:sanctum')->group(function () {
-        // Get user orders
-        Route::get('/', [\App\Http\Controllers\Api\OrderController::class, 'index']);
+    // Get user orders
+    Route::get('/', [\App\Http\Controllers\Api\OrderController::class, 'index']);
 
-        // Get specific order
-        Route::get('/{id}', [\App\Http\Controllers\Api\OrderController::class, 'show']);
+    // Get specific order
+    Route::get('/{id}', [\App\Http\Controllers\Api\OrderController::class, 'show']);
 
-        // Upload payment proof
-        Route::post('/{id}/payment-proof', [\App\Http\Controllers\Api\OrderController::class, 'uploadPaymentProof']);
-    });
+    // Upload payment proof
+    Route::post('/{id}/payment-proof', [\App\Http\Controllers\Api\OrderController::class, 'uploadPaymentProof']);
 });

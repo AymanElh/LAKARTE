@@ -131,6 +131,14 @@ const Header: React.FC = () => {
 
               {isUserDropdownOpen && (
                 <div className="absolute top-full right-0 mt-2 bg-white shadow-lg rounded-lg py-2 w-48">
+                  <Link
+                    to="/profile"
+                    className="w-full text-left px-4 py-2 hover:bg-gold-50 flex items-center space-x-2"
+                    onClick={() => setIsUserDropdownOpen(false)}
+                  >
+                    <User size={16} />
+                    <span>My Profile</span>
+                  </Link>
                   <button
                     onClick={handleAdminAccess}
                     className="w-full text-left px-4 py-2 hover:bg-gold-50 flex items-center space-x-2"

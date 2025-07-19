@@ -171,6 +171,7 @@ export default {
   'customize.placeOrder': 'Place Order',
   'customize.order.success': 'Order placed successfully! We will contact you soon.',
   'customize.order.error': 'Error placing order. Please try again.',
+  'customize.order.validationError': 'Please check the form for errors.',
   
   // Misc
   'whatsapp.message': 'Hello, I would like more information about NFC cards.',

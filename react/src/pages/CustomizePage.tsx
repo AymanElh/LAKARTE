@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Check, Upload, ArrowLeft, ArrowRight, ShoppingCart } from 'lucide-react';
 
 import { packService, Pack, Template } from '../services/packService';
+import { authService } from '../services/authService';
 
 interface OrderFormData {
   // Pack and template selection
@@ -174,7 +175,7 @@ const CustomizePage: React.FC = () => {
       orderData.append('client_email', formData.client_email);
       orderData.append('phone', formData.phone);
       orderData.append('city', formData.city);
-      orderData.append('neighborhood', formData.neighborhood);
+      orderData.append('neighborhood', formData.neighborhood || ''); // Ensure it's not null
       orderData.append('orientation', formData.orientation);
       orderData.append('color', formData.color);
       orderData.append('quantity', formData.quantity.toString());
@@ -184,36 +185,70 @@ const CustomizePage: React.FC = () => {
       if (formData.logo) {
         orderData.append('logo', formData.logo);
       }
+      // Note: brief is handled as text, not file in our form, but backend expects file
+      // For now, we'll create a text file from the brief content
       if (formData.brief) {
-        orderData.append('brief', formData.brief);
+        const briefBlob = new Blob([formData.brief], { type: 'text/plain' });
+        const briefFile = new File([briefBlob], 'brief.txt', { type: 'text/plain' });
+        orderData.append('brief', briefFile);
       }
 
-      console.log('Submitting order data:');
+      console.log('Submitting order data:', {
+        pack_id: formData.pack_id,
+        template_id: formData.template_id,
+        client_name: formData.client_name,
+        client_email: formData.client_email,
+        phone: formData.phone,
+        city: formData.city,
+        neighborhood: formData.neighborhood || '',
+        orientation: formData.orientation,
+        color: formData.color,
+        quantity: formData.quantity,
+        channel: 'form',
+        logo: formData.logo ? formData.logo.name : 'none',
+        brief: formData.brief ? 'text provided' : 'none'
+      });
+
+      // Log the actual FormData entries
+      console.log('FormData entries:');
       for (const [key, value] of orderData.entries()) {
-        console.log(key, value);
+        console.log(key, ':', value instanceof File ? `File: ${value.name} (${value.size} bytes)` : value);
       }
 
       const response = await fetch('http://localhost:8080/api/orders', {
         method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          // Don't set Content-Type for FormData - let browser set it with boundary
+          ...(authService.getToken() && {
+            'Authorization': `Bearer ${authService.getToken()}`
+          })
+        },
         body: orderData,
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
-
       const result = await response.json();
-      console.log('Response result:', result);
+      console.log(result);
+      if (!response.ok) {
+        console.error('Server response:', response.status, result);
+        
+        if (response.status === 422 && result.errors) {
+          // Handle Laravel validation errors
+          setValidationErrors(result.errors);
+          setError(t('customize.order.validationError'));
+        } else {
+          setError(result.message || result.error || `Server error: ${response.status}`);
+        }
+        return;
+      }
 
       if (result.success) {
         alert(t('customize.order.success'));
         navigate('/');
       } else {
         if (result.errors) {
-          // Handle Laravel validation errors
-          console.log('Validation errors:', result.errors);
           setValidationErrors(result.errors);
         } else {
-          console.log('Error message:', result.message);
           setError(result.message || t('customize.order.error'));
         }
       }

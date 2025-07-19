@@ -9,6 +9,7 @@ use App\Models\Pack;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
@@ -26,7 +27,7 @@ class OrderController extends Controller
                 'client_email' => 'required|email|max:255',
                 'phone' => 'required|string|max:20',
                 'city' => 'required|string|max:255',
-                'neighborhood' => 'required|string|max:255',
+                'neighborhood' => 'nullable|string|max:255',
                 'orientation' => 'nullable|string|max:50',
                 'color' => 'nullable|string|max:50',
                 'quantity' => 'required|integer|min:1|max:1000',
@@ -54,10 +55,8 @@ class OrderController extends Controller
                 $validated['brief_path'] = $request->file('brief')->store('orders/briefs', 'public');
             }
 
-            // Set user_id if authenticated
-            if (Auth::check()) {
-                $validated['user_id'] = Auth::id();
-            }
+            // Set user_id from authenticated user
+            $validated['user_id'] = Auth::id();
 
             // Set default status
             $validated['status'] = 'pending';
@@ -79,6 +78,7 @@ class OrderController extends Controller
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
+            Log::error("Error creating the order: " . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error creating order',

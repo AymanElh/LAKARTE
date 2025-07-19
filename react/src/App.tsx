@@ -19,6 +19,7 @@ import RegisterPage from './pages/RegisterPage';
 import PacksPage from './pages/PacksPage';
 import CustomizePage from './pages/CustomizePage';
 import TemplatesPage from './pages/TemplatesPage';
+import ProfilePage from './pages/ProfilePage';
 
 // Types
 import { CardOrientation, CardModelType, CardPackType, GoogleReviewCardType } from './types';
@@ -81,6 +82,7 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/packs" element={<PacksPage />} />
               <Route path="/templates" element={<TemplatesPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </main>
 

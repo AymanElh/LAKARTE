@@ -196,4 +196,5 @@ export default {
   'customize.order.submitting': 'Commande en cours...',
   'customize.order.success': 'Commande créée avec succès!',
   'customize.order.error': 'Erreur lors de la création de la commande',
+  'customize.order.validationError': 'Veuillez vérifier le formulaire pour les erreurs.',
 };
