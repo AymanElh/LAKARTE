@@ -71,11 +71,6 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li>
-              <a href="#gallery" className="text-primary-900 hover:text-gold-500 transition-colors">
-                {t('nav.gallery')}
-              </a>
-            </li>
-            <li>
               <a href="#testimonials" className="text-primary-900 hover:text-gold-500 transition-colors">
                 {t('nav.testimonials')}
               </a>
@@ -86,7 +81,7 @@ const Header: React.FC = () => {
               </a>
             </li>
             <li>
-              <a href="#blog" className="text-primary-900 hover:text-gold-500 transition-colors">
+              <a href="/blog" className="text-primary-900 hover:text-gold-500 transition-colors">
                 {t('nav.blog')}
               </a>
             </li>
@@ -173,7 +168,7 @@ const Header: React.FC = () => {
             </div>
           )}
 
-          <a href="#customize" className="btn btn-primary">
+          <a href="/customize" className="btn btn-primary">
             {t('hero.cta')}
           </a>
         </nav>
