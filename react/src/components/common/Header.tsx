@@ -56,7 +56,7 @@ const Header: React.FC = () => {
         <nav className="hidden md:flex items-center space-x-8">
           <ul className="flex space-x-6">
             <li>
-              <a href="#home" className="text-primary-900 hover:text-gold-500 transition-colors">
+              <a href="/" className="text-primary-900 hover:text-gold-500 transition-colors">
                 {t('nav.home')}
               </a>
             </li>
